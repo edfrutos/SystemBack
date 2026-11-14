@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Privacy manifest de SystemBack.
+  Uso real de required reason API (revisar al añadir código):
+    - FileTimestamp: contentModificationDate / attributesOfItem (backup incremental, tamaños, fechas al restaurar).
+  No se usan DiskSpace ni UserDefaults todavía: añadirlos solo cuando el código los use.
+  PENDIENTE DE VERIFICAR: códigos C617.1 y 3B52.1 contra "Describing use of required reason API"
+  y contra los avisos ITMS-91053 del primer build de TestFlight.
+-->
+<plist version="1.0">
+<dict>
+    <key>NSPrivacyTracking</key>
+    <false/>
+    <key>NSPrivacyTrackingDomains</key>
+    <array/>
+    <key>NSPrivacyCollectedDataTypes</key>
+    <array/>
+    <key>NSPrivacyAccessedAPITypes</key>
+    <array>
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <!-- Ficheros dentro del contenedor de la app (jobs.json, backups por defecto) -->
+                <string>C617.1</string>
+                <!-- Ficheros y carpetas a los que el usuario dio acceso con el selector -->
+                <string>3B52.1</string>
+            </array>
+        </dict>
+    </array>
+</dict>
+</plist>
