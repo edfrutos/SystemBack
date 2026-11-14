@@ -6,6 +6,7 @@ struct ContentView: View {
     @State private var selection: BackupJob.ID?
     @State private var isAddingJob = false
     @State private var isRestoring = false
+    @SceneStorage("showsActivity") private var showsActivity = false
 
     var body: some View {
         @Bindable var model = model
@@ -13,7 +14,7 @@ struct ContentView: View {
             List(model.jobs, selection: $selection) { job in
                 JobRow(job: job)
                     .contextMenu {
-                        Button("Delete Job", role: .destructive) { model.removeJob(job.id) }
+                        Button("Delete Job", systemImage: "trash", role: .destructive) { model.removeJob(job.id) }
                     }
             }
             .navigationSplitViewColumnWidth(min: 200, ideal: 240)
@@ -35,27 +36,50 @@ struct ContentView: View {
                 ContentUnavailableView("Select a Backup Job", systemImage: "sidebar.left")
             }
         }
+        .inspector(isPresented: $showsActivity) {
+            ActivityView()
+                .inspectorColumnWidth(min: 260, ideal: 300, max: 420)
+        }
         .toolbar {
             ToolbarItem {
                 Button("New Backup Job…", systemImage: "plus") { isAddingJob = true }
+                    .help("Create a backup job: choose a folder and where to save its backups")
                     .disabled(model.isBusy)
             }
             ToolbarItem {
-                Button("Restore…", systemImage: "arrow.uturn.backward") { isRestoring = true }
+                Button("Restore from File…", systemImage: "doc.zipper") { isRestoring = true }
+                    .help("Restore a .tar.gz backup file into a new folder")
                     .disabled(model.isBusy)
+            }
+            ToolbarItem {
+                Button("Activity", systemImage: "list.bullet.rectangle") { showsActivity.toggle() }
+                    .help("Show or hide the activity log")
             }
         }
         .safeAreaInset(edge: .bottom) {
-            if let activity = model.activity {
+            // Con el panel Actividad cerrado, la barra inferior mantiene visible el progreso.
+            if let activity = model.activity, !showsActivity {
                 ActivityBar(activity: activity) { model.cancelActivity() }
             }
         }
         .sheet(isPresented: $isAddingJob) { NewJobSheet() }
         .sheet(isPresented: $isRestoring) { RestoreSheet() }
-        .alert(item: $model.notice) { notice in
-            Alert(title: Text(notice.title), message: Text(notice.message))
+        .alert(model.notice?.title ?? "", isPresented: Binding(
+            get: { model.notice != nil },
+            set: { if !$0 { model.notice = nil } }
+        ), presenting: model.notice) { notice in
+            if let url = notice.revealURL {
+                Button("Show in Finder") { model.reveal(url, scope: notice.revealScope) }
+            }
+            Button("OK", role: .cancel) {}
+        } message: { notice in
+            Text(notice.message)
         }
-        .frame(minWidth: 640, minHeight: 400)
+        .onChange(of: model.jobs.count) { oldCount, newCount in
+            // Selecciona el trabajo recién creado.
+            if newCount > oldCount { selection = model.jobs.last?.id }
+        }
+        .frame(minWidth: 760, minHeight: 460)
     }
 }
 
@@ -78,61 +102,22 @@ private struct JobRow: View {
     }
 }
 
-private struct JobDetailView: View {
-    @Environment(AppModel.self) private var model
-    let job: BackupJob
-
-    var body: some View {
-        Form {
-            Section {
-                LabeledContent("Source", value: job.source.displayPath)
-                LabeledContent("Destination", value: job.destination.displayPath)
-            }
-            Section {
-                HStack {
-                    Button("Back Up Now") { model.startBackup(jobID: job.id, incremental: false) }
-                        .keyboardShortcut("b", modifiers: [.command])
-                    Button("Back Up Changes Only") { model.startBackup(jobID: job.id, incremental: true) }
-                        .disabled(job.lastBackupDate == nil)
-                        .help("Only files modified since the last backup")
-                }
-                .disabled(model.isBusy)
-            }
-            Section("History") {
-                if job.history.isEmpty {
-                    Text("No backups yet.").foregroundStyle(.secondary)
-                }
-                ForEach(job.history) { record in
-                    HistoryRow(record: record)
-                }
-            }
-        }
-        .formStyle(.grouped)
-        .navigationTitle(job.name)
-    }
-}
-
-private struct HistoryRow: View {
-    let record: BackupRecord
-
-    var body: some View {
-        LabeledContent {
-            Text(Int64(record.archiveBytes), format: .byteCount(style: .file))
-        } label: {
-            Text(record.date, format: .dateTime)
-            Text(record.kind == .full ? "Full · \(record.fileCount) files" : "Changes only · \(record.fileCount) files")
-        }
-        .help(record.archiveName)
-    }
-}
-
 private struct ActivityBar: View {
     let activity: AppModel.Activity
     let cancel: () -> Void
 
     var body: some View {
         HStack {
-            ProgressView(activity.title, value: activity.fraction)
+            VStack(alignment: .leading, spacing: 4) {
+                ProgressView(activity.title, value: activity.fraction)
+                if let detail = activity.detail {
+                    Text(detail)
+                        .font(.caption.monospaced())
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                }
+            }
             Button("Cancel", action: cancel)
                 .keyboardShortcut(.cancelAction)
         }

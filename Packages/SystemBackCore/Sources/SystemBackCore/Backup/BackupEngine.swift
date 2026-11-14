@@ -60,10 +60,19 @@ public struct BackupRequest: Sendable {
 }
 
 public struct BackupProgress: Sendable, Equatable {
+    public enum Phase: Sendable, Equatable {
+        case scanning
+        case archiving
+        case finishing
+    }
+
+    public var phase: Phase = .archiving
     public var processedFiles: Int
     public var totalFiles: Int
     public var processedBytes: UInt64
     public var totalBytes: UInt64
+    /// Ruta relativa del fichero en curso (para mostrarla; no es un acceso).
+    public var currentPath: String?
 
     public var fractionCompleted: Double {
         totalBytes == 0 ? (totalFiles == 0 ? 1 : Double(processedFiles) / Double(totalFiles))
@@ -107,6 +116,7 @@ public struct BackupEngine: Sendable {
 
         let destinationDirectory = request.destinationRoot.standardizedFileURL
             .appending(path: source.lastPathComponent, directoryHint: .isDirectory)
+        progress(BackupProgress(phase: .scanning, processedFiles: 0, totalFiles: 0, processedBytes: 0, totalBytes: 0))
         let items = try scan(source: source, request: request, skipping: request.destinationRoot)
 
         let files = items.filter { !$0.isDirectory }
@@ -132,6 +142,7 @@ public struct BackupEngine: Sendable {
                     try tar.addDirectory(path: item.archivePath, modificationDate: item.modificationDate)
                     continue
                 }
+                state.currentPath = item.archivePath
                 try tar.addFile(
                     path: item.archivePath, contentsOf: item.url, size: item.size,
                     modificationDate: item.modificationDate, mode: item.mode
@@ -142,6 +153,9 @@ public struct BackupEngine: Sendable {
                 state.processedFiles += 1
                 progress(state)
             }
+            state.phase = .finishing
+            state.currentPath = nil
+            progress(state)
             try tar.finish()
             try gzip.finish()
             try fileManager.moveItem(at: partialURL, to: finalURL)

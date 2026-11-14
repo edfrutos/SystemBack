@@ -173,3 +173,33 @@ Leyenda de estado: `[ ]` pendiente · `[~]` en curso · `[x]` hecho · `[!]` blo
 - Rendimiento con 1 GiB (Release): backup 17,5 s (`gzip -5` del sistema ≈ 10 s equivalentes), restauración 1,4 s, tras cambiar el CRC-32 a `crc32` de zlib.
 - App SwiftUI del spike: trabajos origen→destino, backup completo e incremental con progreso y cancelación, restauración a carpeta nueva, notificaciones con permiso en contexto, "Abrir al iniciar sesión" con SMAppService, menú Ayuda con la política de privacidad.
 
+### 2026-11-14 (F2 → paridad con la app original)
+- Prueba visual del spike validada por el usuario. Log de Xcode sin errores propios (solo ruido del sistema: `linkd.autoShortcut`/AppIntents, puerto de tarea del depurador, ventana de Liquid Glass).
+- Commit inicial `f2c0de5`.
+- Recuperadas funciones de la app original sin depender de Google:
+  - «Actualizar backup» = backup completo + el anterior a la Papelera (recuperable; si el volumen no tiene Papelera, se avisa y el backup nuevo se conserva).
+  - Lista de backups del destino (`ArchiveCatalog`) con restaurar, mostrar en Finder y mover a la Papelera.
+  - Panel «Actividad» (inspector) con registro en vivo; progreso con fase (escaneo indeterminado → determinado) y fichero en curso.
+  - Identidad visual de la original con colores del sistema: tarjetas de acción y etiquetas Completo/Cambios/Local.
+- Tabla de paridad: MongoDB, limpieza de cachés/imágenes, verificación web y ejecución de scripts quedan fuera del producto (D4, guía 2.5.2).
+- Núcleo: 29 tests.
+- El usuario está creando el client ID de Google (tipo iOS, bundle `com.efjdev.systemback`, scope `drive.file`) para D10.
+
+### 2026-11-14 (pruebas del usuario, ronda 2)
+- Backup completo: OK. «Actualizar» y restaurar desde la lista: fallan; restaurar desde archivo: crea una carpeta nueva en el destino (comportamiento previsto, pero no lo que el usuario esperaba).
+- `Failed to open store index with errno: 2`: mensaje del sistema que no identifica la causa. No hay denegaciones del sandbox visibles en `log show`.
+- Causa probable del menú `…` sin efecto: `.fileImporter` activado desde un menú que se está cerrando (aviso `makeKeyWindow … _NSGlassEffectWindow`). Cambiado a NSOpenPanel (`FolderPicker`) + botones visibles en cada fila.
+- Diagnóstico añadido al panel Actividad: backup anterior que se reemplaza, ubicación en la Papelera y carpeta de restauración. El aviso final de restauración ofrece «Mostrar en Finder».
+- Español por defecto con inglés en Ajustes (`AppLanguage`); String Catalog con 97 cadenas es/en; región de desarrollo `es`; privacy manifest añade UserDefaults (CA92.1).
+- Pendiente: repetir «Actualizar» y restaurar desde la lista con el panel Actividad abierto.
+
+
+### 2026-11-14 (pruebas del usuario, ronda 3)
+
+- El backup de las 13:38 que faltaba lo borró el usuario: no es un fallo de la app.
+- Nuevo: **Restaurar en la carpeta original** (`RestoreEngine.restoreInPlace`). No toca los idénticos (mismo tamaño y fecha), mueve a la Papelera lo que sustituye (deshacible) y aborta si no puede apartarlo. Rechaza rutas que escapen por enlaces. Pide confirmación. 5 tests nuevos (34 en total).
+- Corregido: «Mostrar en Finder» fallaba en sandbox (`Sandbox extension creation failed … public.file-url`). Ahora abre el acceso de la bookmark antes de llamar a `NSWorkspace` (`AppModel.reveal`).
+- Pendiente: el usuario vuelve a probar «Actualizar backup» con el panel Actividad abierto.
+- Prueba del usuario OK: restaurar en origen, «Mostrar en Finder» y «Actualizar backup» (el anterior va a la Papelera de iCloud, `~/Library/Mobile Documents/.Trash`, porque Documentos se sincroniza con iCloud; eso explica también el backup «desaparecido» de las 13:38).
+- Añadido: `.help` en todos los controles de solo icono, en las etiquetas y en las tarjetas (si están desactivadas, explica por qué). «Restaurar desde archivo» usa ahora `doc.zipper`.
+- Corregido: plurales («1 elementos») con variaciones `plural` y `substitutions` en el catálogo. Verificado es/en con el bundle compilado.

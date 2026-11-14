@@ -4,7 +4,8 @@
   Privacy manifest de SystemBack.
   Uso real de required reason API (revisar al añadir código):
     - FileTimestamp: contentModificationDate / attributesOfItem (backup incremental, tamaños, fechas al restaurar).
-  No se usan DiskSpace ni UserDefaults todavía: añadirlos solo cuando el código los use.
+    - UserDefaults: idioma de la interfaz (SBInterfaceLanguage / AppleLanguages) y estado de la ventana; solo datos de la propia app.
+  No se usa DiskSpace todavía: añadirlo solo cuando el código lo use.
   PENDIENTE DE VERIFICAR: códigos C617.1 y 3B52.1 contra "Describing use of required reason API"
   y contra los avisos ITMS-91053 del primer build de TestFlight.
 -->
@@ -27,6 +28,15 @@
                 <string>C617.1</string>
                 <!-- Ficheros y carpetas a los que el usuario dio acceso con el selector -->
                 <string>3B52.1</string>
+            </array>
+        </dict>
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <!-- Leer/escribir datos accesibles solo por la propia app -->
+                <string>CA92.1</string>
             </array>
         </dict>
     </array>
