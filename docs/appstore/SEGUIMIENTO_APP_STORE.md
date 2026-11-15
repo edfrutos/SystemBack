@@ -255,3 +255,10 @@ Leyenda de estado: `[ ]` pendiente · `[~]` en curso · `[x]` hecho · `[!]` blo
   - el aviso de `onChange`.
 - **Pendiente para la v1.1:** icono simplificado por capas en Icon Composer.
 - **Capturas** documentadas en `CAPTURAS.md`.
+
+### 2026-11-15 (web)
+
+- `efjdev.com/systemback/` (página 136) publicada. El texto de Drive se cambia de «próximamente» a función disponible (subir y restaurar; la app solo ve sus archivos).
+- La portada (página 25) tiene la tarjeta «SystemBack · Mac App Store · próximamente», que enlaza a la página 136.
+- La sección de SystemBack en `/privacidad/` ya describía Drive correctamente (OAuth, `drive.file`, Llavero, uso limitado). No se ha tocado.
+- Siguiente paso: en Google Auth Platform › Centro de verificación, solicitar la verificación de marca. Las URLs de inicio y de privacidad ya responden.
