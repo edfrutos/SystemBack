@@ -83,7 +83,7 @@ Ordenados por gravedad. **B** = bloquea la publicación, **S** = riesgo de segur
 | D3 | Empaquetado | **Proyecto Xcode nativo** (archive, firma automática, exportación a App Store Connect) | Se descartan py2app y Briefcase para el producto: Briefcase empaqueta Python y no aplica a una app Swift. |
 | D4 | MongoDB | **Fuera del producto** | El estado de la app (historial, ajustes, carpetas) se guarda localmente en el contenedor. El backup de Atlas sigue en la herramienta Python. Sin `network.client` hacia bases de datos ni URI en la etiqueta de privacidad. |
 | D5 | Modelo de negocio | Gratis | Sin StoreKit. |
-| D6 | Nombre, bundle ID, dominio | **SystemBack** · `com.efjdev.systemback` · `systemback.efjdev.com` (pendiente de crear) | Riesgos aceptados, ver §8: colisión con *Systemback* de Linux y un nombre que puede sugerir backup completo del sistema. Comprobar la disponibilidad del nombre al crear la app en App Store Connect. |
+| D6 | Nombre, bundle ID, dominio | **SystemBack** · `com.edefrutos.systemback` · `efjdev.com/systemback/` (sin subdominio: la app no tiene servidor) | Riesgos aceptados, ver §8: colisión con *Systemback* de Linux y un nombre que puede sugerir backup completo del sistema. Comprobar la disponibilidad del nombre al crear la app en App Store Connect. |
 | D7 | Idiomas | es + en | String Catalog (`Localizable.xcstrings`) en el bundle. |
 
 Decisiones nuevas que abre la reescritura (se cierran en la Fase 2):
@@ -119,7 +119,7 @@ SystemBack.app (Swift 6, SwiftUI, App Sandbox)
 ├── System
 │   ├── Notifications     UserNotifications (permiso pedido en contexto)
 │   └── LoginItem         SMAppService.mainApp con toggle en Ajustes
-└── Datos: ~/Library/Containers/com.efjdev.systemback/Data/Library/
+└── Datos: ~/Library/Containers/com.edefrutos.systemback/Data/Library/
         ├── Application Support/SystemBack/  (registro, ajustes, bookmarks)
         ├── Logs/                             (os.Logger; nada sensible)
         └── destino de backups: elegido por el usuario (bookmark) o carpeta por defecto en el contenedor
@@ -151,9 +151,9 @@ Las estimaciones son orientativas para una persona con dedicación parcial; la F
 ### Fase 0 — Decisiones y cuentas (en curso)
 - [x] D1–D7 cerradas (2026-11-14).
 - Alta o renovación en **Apple Developer Program**. Comprobar si la cuenta es individual o de organización: el nombre del vendedor aparece en la tienda.
-- Registrar el bundle ID `com.efjdev.systemback` y crear la app en App Store Connect. Ahí se confirma que el nombre "SystemBack" está libre.
+- Registrar el bundle ID `com.edefrutos.systemback` y crear la app en App Store Connect. Ahí se confirma que el nombre "SystemBack" está libre.
 - Firma: con Xcode basta la firma automática (*Apple Distribution* + perfil Mac App Store). Para `.pkg` manual haría falta además *Mac Installer Distribution*.
-- Crear `systemback.efjdev.com` con política de privacidad (es/en) y página de soporte.
+- Página `efjdev.com/systemback/`, sección en `efjdev.com/privacidad/` y soporte en `efjdev.com/soporte/`.
 - Google Cloud: proyecto de producción, Drive API, pantalla de consentimiento externa con dominio `efjdev.com` verificado, *homepage* y política. Tipo de cliente OAuth según D10: el SDK GoogleSignIn usa un cliente de tipo iOS, válido para macOS; un redirect con esquema propio necesita confirmar el tipo en el spike.
 
 **Salida**: cuenta activa, bundle ID registrado, app creada en App Store Connect y web publicada.
@@ -219,7 +219,7 @@ Proyecto Xcode mínimo `SystemBack` con App Sandbox (entitlements generados por 
 
 | Clave | Valor |
 | --- | --- |
-| `CFBundleIdentifier` | `com.efjdev.systemback` |
+| `CFBundleIdentifier` | `com.edefrutos.systemback` |
 | `CFBundleDisplayName` | `SystemBack` |
 | `CFBundleShortVersionString` / `CFBundleVersion` | `1.0.0` / número de build incremental |
 | `LSApplicationCategoryType` | `public.app-category.utilities` |

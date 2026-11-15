@@ -33,7 +33,7 @@ Leyenda de estado: `[ ]` pendiente · `[~]` en curso · `[x]` hecho · `[!]` blo
 | D3 | Empaquetado | Proyecto Xcode nativo | 2026-11-14 | Consecuencia de D2. Briefcase descartado: empaqueta Python |
 | D4 | MongoDB | Fuera del producto; estado local en el contenedor | 2026-11-14 | El backup de Atlas sigue en la herramienta Python |
 | D5 | Modelo de negocio | Gratis | 2026-11-14 | Sin StoreKit |
-| D6 | Nombre / bundle ID / dominio | SystemBack · `com.efjdev.systemback` · `systemback.efjdev.com` | 2026-11-14 | Riesgo aceptado: colisión con *Systemback* (Linux) y lectura de "backup del sistema" (plan §8). Subdominio alineado con el nombre en lugar de `sysback` |
+| D6 | Nombre / bundle ID / dominio | SystemBack · `com.edefrutos.systemback` (cambiado el 2026-11-14) · `efjdev.com/systemback/` | 2026-11-14 | Riesgo aceptado: colisión con *Systemback* (Linux) y lectura de "backup del sistema" (plan §8). Subdominio alineado con el nombre en lugar de `sysback` |
 | D7 | Idiomas | es + en | 2026-11-14 | String Catalog en el bundle |
 | D8 | macOS mínimo | **macOS 14** | 2026-11-14 | SwiftData/`@Observable`/SMAppService disponibles; base amplia |
 | D9 | Formato del backup | **`.tar.gz` propio** (tar POSIX/PAX + gzip sobre Compression `.zlib` + `crc32` de zlib) | 2026-11-14 | Sin dependencias; verificado con `tar`/`gunzip` del sistema y `tarfile` de Python en ambos sentidos. 1 GiB: backup 17,5 s, restauración 1,4 s |
@@ -48,10 +48,10 @@ Leyenda de estado: `[ ]` pendiente · `[~]` en curso · `[x]` hecho · `[!]` blo
 ### F0 — Decisiones y cuentas
 - [x] D1–D7 cerradas
 - [ ] Apple Developer Program activo (¿individual u organización?)
-- [ ] Bundle ID `com.efjdev.systemback` registrado
+- [ ] Bundle ID `com.edefrutos.systemback` registrado
 - [ ] App creada en App Store Connect (confirma que el nombre "SystemBack" está libre)
 - [ ] Firma automática de Xcode operativa (Apple Distribution + perfil Mac App Store)
-- [ ] `systemback.efjdev.com` creado con política de privacidad (es/en) y página de soporte
+- [ ] Página `efjdev.com/systemback/` y sección `efjdev.com/privacidad/` (soporte: `efjdev.com/soporte/`)
 - [ ] Google Cloud: proyecto de producción, Drive API, pantalla de consentimiento externa, dominio `efjdev.com` verificado, verificación de marca iniciada
 
 ### F1 — Seguridad e higiene
@@ -203,3 +203,42 @@ Leyenda de estado: `[ ]` pendiente · `[~]` en curso · `[x]` hecho · `[!]` blo
 - Prueba del usuario OK: restaurar en origen, «Mostrar en Finder» y «Actualizar backup» (el anterior va a la Papelera de iCloud, `~/Library/Mobile Documents/.Trash`, porque Documentos se sincroniza con iCloud; eso explica también el backup «desaparecido» de las 13:38).
 - Añadido: `.help` en todos los controles de solo icono, en las etiquetas y en las tarjetas (si están desactivadas, explica por qué). «Restaurar desde archivo» usa ahora `doc.zipper`.
 - Corregido: plurales («1 elementos») con variaciones `plural` y `substitutions` en el catálogo. Verificado es/en con el bundle compilado.
+
+### 2026-11-14 (cuentas y web)
+
+- **D6 revisada:** bundle ID `com.edefrutos.systemback` (proyecto, `Logger` y docs actualizados). Team ID `V29BTBRY6G` (`DEVELOPMENT_TEAM` en Debug y Release). Los datos de pruebas del contenedor sandbox anterior (`com.efjdev.systemback`) no se migran.
+- **Web:** sin subdominio, porque la app no tiene servidor.
+  - Sección «SystemBack» publicada en `https://efjdev.com/privacidad/`, con la declaración de uso limitado de Google. No hay ancla: Elementor quita el `id`.
+  - Página `efjdev.com/systemback/` creada como borrador (post 136), con la misma estructura que Replacer. Pendiente de que el usuario la publique.
+  - `AppLinks` apunta a `https://efjdev.com/privacidad/` y `https://efjdev.com/soporte/`.
+- **Google:** el cliente OAuth actual es de tipo «Escritorio». Hace falta uno de tipo **iOS** con bundle `com.edefrutos.systemback` para `ASWebAuthenticationSession` con el esquema del client ID invertido.
+- **D10 ampliada:** Drive entra en la v1.0. La publicación espera a la verificación de la marca y del dominio en la pantalla de consentimiento de Google.
+- **App Store Connect:** respuestas preparadas en `docs/appstore/APP_STORE_CONNECT.md`.
+- App Store Connect: «SystemBack» se acepta en es-ES, pero está ocupado en inglés. En la localización en se usa `SystemBack: Folder Backups`. El nombre en el Mac (`CFBundleDisplayName`) sigue siendo «SystemBack».
+
+### 2026-11-14 (Google Drive, fase A)
+
+- Cliente OAuth **iOS** creado por el usuario (`784383135948-i33ib…`), con bundle `com.edefrutos.systemback`.
+- Hecho:
+  - inicio de sesión con PKCE y token de renovación en el Llavero;
+  - en Ajustes, conectar y desconectar (al desconectar se revoca el acceso en Google);
+  - por trabajo, la opción «Subir los backups nuevos a Google Drive»;
+  - por fila, la etiqueta «Drive» y el botón «Subir a Google Drive», con progreso en Actividad y cancelación.
+- Permisos del sandbox sin cambios (solo `network.client`).
+- 43 tests en el núcleo: 8 de Drive y OAuth y 1 de compatibilidad de `jobs.json`.
+- Pendiente (fase B): listar los backups que solo están en Drive y restaurarlos (descargar y luego restaurar), y enviarlos a la papelera de Drive.
+- Pendiente (usuario): pantalla de consentimiento con el permiso `drive.file`, usuarios de prueba mientras esté en «Testing», y verificación de marca y dominio antes de publicar.
+
+### 2026-11-15 (Google Drive, fase B)
+
+- Consola de Google configurada por el usuario: Drive API habilitada, permiso `drive.file`, usuario de prueba, app «En prueba».
+- Primera prueba real: la subida funcionó. Dos fallos de decodificación corregidos con test:
+  - Google omite `files` si la lista está vacía;
+  - al crear carpeta con `fields=id` no llega `name`.
+- Decisión: el destino sigue siendo local; Drive es copia adicional (no hay destino «solo Drive»).
+- Hecho:
+  - la lista de backups incluye los que solo están en Drive (etiqueta «Drive»);
+  - descargar a la carpeta de destino, restaurar en carpeta nueva o en la original (descarga primero), mandar a la papelera de Drive;
+  - en filas locales con copia en Drive, menú contextual para mandar esa copia a la papelera de Drive.
+- 47 tests en el núcleo. 156 cadenas en el catálogo.
+- Pendiente: probar la fase B con la cuenta real.

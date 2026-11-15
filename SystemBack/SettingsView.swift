@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @Environment(AppModel.self) private var model
     @State private var language = AppLanguage.selected
     @State private var opensAtLogin = LoginItem.isEnabled
     @State private var needsApproval = LoginItem.requiresApproval
@@ -28,6 +29,30 @@ struct SettingsView: View {
             }
 
             Section {
+                if model.isDriveConnected {
+                    LabeledContent("Google Drive") {
+                        if let email = model.driveEmail {
+                            Text(verbatim: email).textSelection(.enabled)
+                        } else {
+                            Text("Connected")
+                        }
+                    }
+                    Button("Disconnect Google Drive", role: .destructive) { model.disconnectDrive() }
+                } else {
+                    LabeledContent("Google Drive") {
+                        Button("Connect Google Drive…") { model.connectDrive() }
+                            .disabled(model.isConnectingDrive)
+                    }
+                }
+            } header: {
+                Text("Google Drive")
+            } footer: {
+                Text("SystemBack can only see the files it creates in your Drive. Backups go directly from this Mac to your account.")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+            }
+
+            Section {
                 Toggle("Open at Login", isOn: $opensAtLogin)
                     .onChange(of: opensAtLogin) { _, enabled in applyLogin(enabled) }
                 if needsApproval {
@@ -42,6 +67,7 @@ struct SettingsView: View {
         }
         .formStyle(.grouped)
         .frame(width: 460)
+        .task { await model.loadDriveAccount() }
     }
 
     private func applyLogin(_ enabled: Bool) {

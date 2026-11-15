@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Qué es
 
-**SystemBack** (`com.efjdev.systemback`): app nativa macOS (Swift 6 / SwiftUI, macOS 14+) para la **Mac App Store**. Hace backup `.tar.gz` de las carpetas que elige el usuario, en local (y en Google Drive, pendiente), y las restaura. Es la reescritura de la herramienta Python `../000.-EDF_Sistema_de_Backups`, que **no se modifica** desde aquí: sirve solo como referencia funcional (sus tests son la especificación portada).
+**SystemBack** (`com.edefrutos.systemback`): app nativa macOS (Swift 6 / SwiftUI, macOS 14+) para la **Mac App Store**. Hace backup `.tar.gz` de las carpetas que elige el usuario, en local con copia opcional en Google Drive, y las restaura. Es la reescritura de la herramienta Python `../000.-EDF_Sistema_de_Backups`, que **no se modifica** desde aquí: sirve solo como referencia funcional (sus tests son la especificación portada).
 
 Plan, decisiones (D1–D12) y estado: `docs/appstore/PLAN_APP_STORE.md` y `docs/appstore/SEGUIMIENTO_APP_STORE.md`. Actualiza el seguimiento (checklist + bitácora) en cada sesión.
 
@@ -55,3 +55,20 @@ No hay linter configurado.
 - Selectores de carpeta lanzados desde menús o botones de fila: usar `FolderPicker` (NSOpenPanel), no `.fileImporter` (se pierde al cerrarse el menú).
 - Revisión de diseño con la skill `apple-design`.
 - Secretos (tokens de Google): Llavero, nunca en ficheros ni en el repositorio.
+
+## Google Drive (D10)
+
+- Núcleo (`Packages/SystemBackCore/Sources/SystemBackCore/Drive/`):
+  - `GoogleOAuth.swift`: `PKCE`, `GoogleOAuthConfig` (cliente **iOS**, sin secreto; redirect `com.googleusercontent.apps.<id>:/oauth2redirect`), `GoogleOAuthClient` (canje, renovación, revocación) y `GoogleAPIError` (`invalid_grant` se traduce a `.authorizationRevoked`).
+  - `DriveClient.swift`: REST v3 con scope `drive.file`: carpetas, lista paginada, subida reanudable desde disco con progreso, enviar a la papelera, descarga.
+  - Se prueban con `MockURLProtocol`; esa suite va en serie (`.serialized`).
+- App (`SystemBack/System/GoogleAccount.swift`):
+  - `GoogleConfig` (client ID).
+  - `Keychain`: solo el token de renovación, servicio `com.edefrutos.systemback.google`.
+  - `GoogleSession` (actor): token de acceso en memoria, renovado al caducar.
+  - `GoogleSignIn`: `ASWebAuthenticationSession`. Su cierre es `@Sendable`, porque el sistema lo llama fuera del hilo principal.
+- Carpetas en Drive: `SystemBack/<carpeta de origen>/`. Subir a Drive nunca borra nada en Drive: «Actualizar backup» solo manda el anterior local a la Papelera del Mac.
+- `BackupJob.uploadsToDrive` se decodifica con `decodeIfPresent`, así los `jobs.json` antiguos siguen leyéndose.
+- Modelo: el destino siempre es local; Drive es una copia adicional (decisión del usuario, 2026-11-15).
+- Backups solo en Drive (`RemoteArchive`, `ArchiveCatalog.remote`): se listan en la misma lista; restaurar = descargar al destino (`ArchiveCatalog.adopt`, sin sobrescribir) y restaurar el backup local. Los nombres de Drive se validan (`isSafeArchiveName`) antes de escribir en disco.
+- Respuestas de Drive con `fields`: Google omite listas vacías y solo devuelve los campos pedidos; decodificar con opcionales. Fallos de decodificación se registran en `Logger` (categoría `Drive`).

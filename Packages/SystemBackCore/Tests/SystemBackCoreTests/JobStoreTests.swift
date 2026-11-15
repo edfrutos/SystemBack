@@ -22,6 +22,21 @@ struct JobStoreTests {
         #expect(try store.load() == [original])
     }
 
+    @Test func `un jobs.json sin uploadsToDrive se lee con la opción desactivada`() throws {
+        let file = sandbox.url.appending(path: "old/jobs.json")
+        try FileManager.default.createDirectory(at: file.deletingLastPathComponent(), withIntermediateDirectories: true)
+        let legacy = #"{"version":1,"jobs":[{"id":"6F1C2A44-2B4B-4B47-9B0E-3C8D7B1E0A11","name":"Docs","source":{"bookmark":"AQID","displayPath":"/a"},"destination":{"bookmark":"AQID","displayPath":"/b"},"exclusions":{"names":[".DS_Store"],"extensions":[]},"history":[]}]}"#
+        try Data(legacy.utf8).write(to: file)
+        let jobs = try JobStore(fileURL: file).load()
+        #expect(jobs.count == 1)
+        #expect(jobs.first?.uploadsToDrive == false)
+
+        var changed = try #require(jobs.first)
+        changed.uploadsToDrive = true
+        try JobStore(fileURL: file).save([changed])
+        #expect(try JobStore(fileURL: file).load().first?.uploadsToDrive == true)
+    }
+
     @Test func `el historial se limita y el más reciente va primero`() {
         var item = job()
         for index in 0..<(BackupJob.historyLimit + 5) {

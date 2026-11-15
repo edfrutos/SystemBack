@@ -61,6 +61,38 @@
         }
       }
     },
+    "%@ downloaded to the destination folder.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ downloaded to the destination folder."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ descargado en la carpeta de destino."
+          }
+        }
+      }
+    },
+    "%@ moved to the Google Drive trash.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ moved to the Google Drive trash."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ movido a la papelera de Google Drive."
+          }
+        }
+      }
+    },
     "%@ moved to the Trash.": {
       "localizations": {
         "en": {
@@ -73,6 +105,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ se ha movido a la Papelera."
+          }
+        }
+      }
+    },
+    "%@ uploaded to Google Drive.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ uploaded to Google Drive."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ subido a Google Drive."
           }
         }
       }
@@ -333,6 +381,38 @@
         }
       }
     },
+    "A backup with that name is already in the destination folder.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A backup with that name is already in the destination folder."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ya hay un backup con ese nombre en la carpeta de destino."
+          }
+        }
+      }
+    },
+    "A copy is in your Google Drive": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A copy is in your Google Drive"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hay una copia en tu Google Drive"
+          }
+        }
+      }
+    },
     "Actions": {
       "localizations": {
         "en": {
@@ -361,6 +441,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Actividad"
+          }
+        }
+      }
+    },
+    "After each backup, upload a copy to Google Drive": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "After each backup, upload a copy to Google Drive"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Después de cada backup, sube una copia a Google Drive"
           }
         }
       }
@@ -685,6 +781,70 @@
         }
       }
     },
+    "Connect Google Drive in Settings to use this option": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connect Google Drive in Settings to use this option"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conecta Google Drive en Ajustes para usar esta opción"
+          }
+        }
+      }
+    },
+    "Connect Google Drive…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connect Google Drive…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conectar Google Drive…"
+          }
+        }
+      }
+    },
+    "Connected": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connected"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conectado"
+          }
+        }
+      }
+    },
+    "Couldn’t Connect Google Drive": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn’t Connect Google Drive"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se ha podido conectar Google Drive"
+          }
+        }
+      }
+    },
     "Couldn’t Load Backup Jobs": {
       "localizations": {
         "en": {
@@ -717,6 +877,22 @@
         }
       }
     },
+    "Couldn’t Move to the Google Drive Trash": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn’t Move to the Google Drive Trash"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se ha podido mover a la papelera de Google Drive"
+          }
+        }
+      }
+    },
     "Couldn’t Save Changes": {
       "localizations": {
         "en": {
@@ -729,6 +905,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "No se han podido guardar los cambios"
+          }
+        }
+      }
+    },
+    "Couldn’t read Google Drive": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn’t read Google Drive"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se ha podido leer Google Drive"
           }
         }
       }
@@ -809,6 +1001,150 @@
           "stringUnit": {
             "state": "translated",
             "value": "Destino"
+          }
+        }
+      }
+    },
+    "Disconnect Google Drive": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disconnect Google Drive"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desconectar Google Drive"
+          }
+        }
+      }
+    },
+    "Download cancelled. Nothing was saved.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download cancelled. Nothing was saved."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descarga cancelada. No se ha guardado nada."
+          }
+        }
+      }
+    },
+    "Download from Google Drive Failed": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download from Google Drive Failed"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se ha podido descargar de Google Drive"
+          }
+        }
+      }
+    },
+    "Download this backup to the destination folder": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download this backup to the destination folder"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descargar este backup a la carpeta de destino"
+          }
+        }
+      }
+    },
+    "Download to This Mac": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download to This Mac"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descargar a este Mac"
+          }
+        }
+      }
+    },
+    "Download, then restore missing or changed files into the original folder": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download, then restore missing or changed files into the original folder"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descargar y restaurar en la carpeta original lo que falte o haya cambiado"
+          }
+        }
+      }
+    },
+    "Download, then restore this backup into a new folder": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download, then restore this backup into a new folder"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descargar y restaurar este backup en una carpeta nueva"
+          }
+        }
+      }
+    },
+    "Downloading %@ from Google Drive": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Downloading %@ from Google Drive"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descargando %@ de Google Drive"
+          }
+        }
+      }
+    },
+    "Drive": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drive"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drive"
           }
         }
       }
@@ -925,6 +1261,118 @@
         }
       }
     },
+    "Google Drive": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google Drive"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google Drive"
+          }
+        }
+      }
+    },
+    "Google Drive connected.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google Drive connected."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google Drive conectado."
+          }
+        }
+      }
+    },
+    "Google Drive disconnected. Backups already in Drive were kept.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google Drive disconnected. Backups already in Drive were kept."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google Drive desconectado. Los backups que ya estaban en Drive se conservan."
+          }
+        }
+      }
+    },
+    "Google Drive isn’t connected. Connect it in Settings.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google Drive isn’t connected. Connect it in Settings."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google Drive no está conectado. Conéctalo en Ajustes."
+          }
+        }
+      }
+    },
+    "Google Drive returned an error (%lld): %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google Drive returned an error (%1$lld): %2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google Drive ha devuelto un error (%1$lld): %2$@"
+          }
+        }
+      }
+    },
+    "Google no longer allows SystemBack to access your Drive. Connect it again in Settings.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google no longer allows SystemBack to access your Drive. Connect it again in Settings."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google ya no permite a SystemBack acceder a tu Drive. Vuelve a conectarlo en Ajustes."
+          }
+        }
+      }
+    },
+    "Google returned an unexpected response. Try again.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google returned an unexpected response. Try again."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google ha devuelto una respuesta inesperada. Inténtalo de nuevo."
+          }
+        }
+      }
+    },
     "Information": {
       "localizations": {
         "en": {
@@ -1037,6 +1485,38 @@
         }
       }
     },
+    "Move Drive Copy to the Google Drive Trash": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Move Drive Copy to the Google Drive Trash"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mover la copia de Drive a la papelera de Google Drive"
+          }
+        }
+      }
+    },
+    "Move this backup to the Google Drive trash": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Move this backup to the Google Drive trash"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mover este backup a la papelera de Google Drive"
+          }
+        }
+      }
+    },
     "Move this backup to the Trash": {
       "localizations": {
         "en": {
@@ -1065,6 +1545,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mover a la Papelera"
+          }
+        }
+      }
+    },
+    "Move to the Google Drive Trash": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Move to the Google Drive Trash"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mover a la papelera de Google Drive"
           }
         }
       }
@@ -1241,6 +1737,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aceptar"
+          }
+        }
+      }
+    },
+    "Only in your Google Drive. It isn’t in the destination folder on this Mac": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only in your Google Drive. It isn’t in the destination folder on this Mac"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo está en tu Google Drive, no en la carpeta de destino de este Mac"
           }
         }
       }
@@ -1885,6 +2397,22 @@
         }
       }
     },
+    "SystemBack can only see the files it creates in your Drive. Backups go directly from this Mac to your account.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SystemBack can only see the files it creates in your Drive. Backups go directly from this Mac to your account."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SystemBack solo puede ver los archivos que crea en tu Drive. Los backups van directamente de este Mac a tu cuenta."
+          }
+        }
+      }
+    },
     "The archive contains an unsafe path (%@). Nothing was restored.": {
       "localizations": {
         "en": {
@@ -1913,6 +2441,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "El archivo está dañado o incompleto. No se ha restaurado nada."
+          }
+        }
+      }
+    },
+    "The backup is downloaded to the destination folder first. Files from %@ will be copied into %@. Files with different content are moved to the Trash first. Files that aren’t in the backup are left as they are.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The backup is downloaded to the destination folder first. Files from %1$@ will be copied into %2$@. Files with different content are moved to the Trash first. Files that aren’t in the backup are left as they are."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Primero se descarga el backup a la carpeta de destino. Los archivos de %1$@ se copiarán en %2$@. Los archivos con contenido distinto se moverán antes a la Papelera. Los archivos que no estén en el backup no se tocan."
           }
         }
       }
@@ -2013,6 +2557,22 @@
         }
       }
     },
+    "There’s no internet connection. The backup is still saved on this Mac.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "There’s no internet connection. The backup is still saved on this Mac."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay conexión a internet. El backup sigue guardado en este Mac."
+          }
+        }
+      }
+    },
     "This file isn’t a .tar.gz backup.": {
       "localizations": {
         "en": {
@@ -2025,6 +2585,102 @@
           "stringUnit": {
             "state": "translated",
             "value": "Este archivo no es un backup .tar.gz."
+          }
+        }
+      }
+    },
+    "Upload New Backups to Google Drive": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upload New Backups to Google Drive"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subir los backups nuevos a Google Drive"
+          }
+        }
+      }
+    },
+    "Upload a copy of this backup to Google Drive": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upload a copy of this backup to Google Drive"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subir una copia de este backup a Google Drive"
+          }
+        }
+      }
+    },
+    "Upload cancelled. The backup is still saved on this Mac.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upload cancelled. The backup is still saved on this Mac."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subida cancelada. El backup sigue guardado en este Mac."
+          }
+        }
+      }
+    },
+    "Upload to Google Drive": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upload to Google Drive"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subir a Google Drive"
+          }
+        }
+      }
+    },
+    "Upload to Google Drive Failed": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upload to Google Drive Failed"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se ha podido subir a Google Drive"
+          }
+        }
+      }
+    },
+    "Uploading %@ to Google Drive": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uploading %@ to Google Drive"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subiendo %@ a Google Drive"
           }
         }
       }

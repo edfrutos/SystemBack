@@ -19,6 +19,18 @@ public struct ArchiveInfo: Sendable, Hashable, Identifiable {
     public var name: String { url.lastPathComponent }
 }
 
+/// Un backup guardado en Google Drive (carpeta `SystemBack/<origen>/`).
+public struct RemoteArchive: Sendable, Hashable, Identifiable {
+    public var file: DriveFile
+    public var kind: ArchiveInfo.Kind
+    /// Fecha del nombre o, si no la tiene, la de creación en Drive.
+    public var date: Date
+
+    public var id: String { file.id }
+    public var name: String { file.name }
+    public var bytes: UInt64 { file.size ?? 0 }
+}
+
 /// Lista y gestiona los backups de un origen dentro de su carpeta de destino.
 /// Las funciones esperan que el llamador ya tenga acceso (security scope) al destino.
 public enum ArchiveCatalog {
@@ -56,6 +68,40 @@ public enum ArchiveCatalog {
         var resulting: NSURL?
         try FileManager.default.trashItem(at: archive, resultingItemURL: &resulting)
         return resulting as URL?
+    }
+
+    /// Backups de Drive con nombre válido, del más reciente al más antiguo.
+    /// Se descartan los nombres que no podrían guardarse con seguridad en la carpeta de destino.
+    public static func remote(_ files: [DriveFile], sourceName: String) -> [RemoteArchive] {
+        files.compactMap { file -> RemoteArchive? in
+            guard isSafeArchiveName(file.name) else { return nil }
+            let parsed = parse(name: file.name, sourceName: sourceName)
+            return RemoteArchive(file: file, kind: parsed.kind,
+                                 date: parsed.date ?? file.createdTime ?? .distantPast)
+        }
+        .sorted { $0.date > $1.date }
+    }
+
+    /// Nombre de archivo simple `.tar.gz` / `.tgz`: sin rutas, sin ocultos, sin caracteres de control.
+    public static func isSafeArchiveName(_ name: String) -> Bool {
+        let lower = name.lowercased()
+        return !name.isEmpty && name.count <= 255
+            && !name.hasPrefix(".")
+            && !name.contains("/") && !name.contains(":")
+            && !name.unicodeScalars.contains { $0.properties.generalCategory == .control }
+            && (lower.hasSuffix(".tar.gz") || lower.hasSuffix(".tgz"))
+    }
+
+    /// Mueve un archivo descargado a la carpeta de backups del origen sin sobrescribir nada.
+    /// Devuelve su ubicación final.
+    public static func adopt(_ file: URL, named name: String, destinationRoot: URL, sourceName: String) throws -> URL {
+        guard isSafeArchiveName(name) else { throw CocoaError(.fileWriteInvalidFileName) }
+        let folder = directory(destinationRoot: destinationRoot, sourceName: sourceName)
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        let target = folder.appending(path: name, directoryHint: .notDirectory)
+        guard !FileManager.default.fileExists(atPath: target.path) else { throw CocoaError(.fileWriteFileExists) }
+        try FileManager.default.moveItem(at: file, to: target)
+        return target
     }
 
     /// `backup_<origen>_<yyyyMMdd_HHmmss>[_n].tar.gz` / `incr_…`.

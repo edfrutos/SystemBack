@@ -155,6 +155,58 @@ nonisolated enum BackgroundWork {
         }
     }
 
+    // MARK: - Google Drive
+
+    /// Carpeta del trabajo en Drive: `SystemBack/<carpeta de origen>/` (se crea si falta).
+    private static func driveFolder(for job: BackupJob, _ drive: DriveClient) async throws -> String {
+        let root = try await drive.findOrCreateFolder(named: GoogleConfig.rootFolderName, parent: nil)
+        return try await drive.findOrCreateFolder(named: try sourceName(of: job), parent: root)
+    }
+
+    @concurrent
+    static func listDrive(of job: BackupJob) async throws -> [RemoteArchive] {
+        let drive = GoogleSession.drive
+        let files = try await drive.list(inFolder: try await driveFolder(for: job, drive))
+        return ArchiveCatalog.remote(files, sourceName: try sourceName(of: job))
+    }
+
+    /// Descarga un backup de Drive a la carpeta de destino del trabajo (sin sobrescribir).
+    /// Primero a un temporal del contenedor: si falla o se cancela, no queda nada a medias en el destino.
+    @concurrent
+    static func downloadFromDrive(_ remote: RemoteArchive, of job: BackupJob) async throws -> URL {
+        let temporary = FileManager.default.temporaryDirectory
+            .appending(path: UUID().uuidString + ".tar.gz", directoryHint: .notDirectory)
+        defer { try? FileManager.default.removeItem(at: temporary) }
+        try await GoogleSession.drive.download(remote.file.id, to: temporary)
+        try Task.checkCancellation()
+        let (destinationURL, _) = try job.destination.resolve()
+        return try withSecurityScopedAccess(to: destinationURL) {
+            try ArchiveCatalog.adopt(temporary, named: remote.name,
+                                     destinationRoot: destinationURL, sourceName: try sourceName(of: job))
+        }
+    }
+
+    /// A la papelera de Drive (recuperable 30 días desde drive.google.com).
+    @concurrent
+    static func trashInDrive(_ remote: RemoteArchive) async throws {
+        try await GoogleSession.drive.trash(remote.file.id)
+    }
+
+    @concurrent
+    static func uploadToDrive(
+        _ archive: ArchiveInfo,
+        of job: BackupJob,
+        progress: AsyncStream<Double>.Continuation
+    ) async throws -> DriveFile {
+        defer { progress.finish() }
+        let drive = GoogleSession.drive
+        let folder = try await driveFolder(for: job, drive)
+        let (destinationURL, _) = try job.destination.resolve()
+        let didStart = destinationURL.startAccessingSecurityScopedResource()
+        defer { if didStart { destinationURL.stopAccessingSecurityScopedResource() } }
+        return try await drive.upload(fileAt: archive.url, name: archive.name, parent: folder) { progress.yield($0) }
+    }
+
     /// Nombre actual de la carpeta de origen (la bookmark sigue a la carpeta si se renombra).
     private static func sourceName(of job: BackupJob) throws -> String {
         try job.source.resolve().url.standardizedFileURL.lastPathComponent

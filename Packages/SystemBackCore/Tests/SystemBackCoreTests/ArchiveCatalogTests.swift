@@ -35,6 +35,40 @@ struct ArchiveCatalogTests {
         #expect(archives.first?.date == newer)
     }
 
+    @Test func `backups de Drive: descarta nombres inseguros y ordena por fecha`() {
+        let files = [
+            DriveFile(id: "1", name: "backup_proyecto_20261114_090507.tar.gz", size: 10),
+            DriveFile(id: "2", name: "incr_proyecto_20261115_090507.tar.gz"),
+            DriveFile(id: "3", name: "../fuera.tar.gz"),
+            DriveFile(id: "4", name: ".oculto.tar.gz"),
+            DriveFile(id: "5", name: "notas.txt"),
+            DriveFile(id: "6", name: "a:b.tgz"),
+        ]
+        let remote = ArchiveCatalog.remote(files, sourceName: "proyecto")
+        #expect(remote.map(\.id) == ["2", "1"])
+        #expect(remote.map(\.kind) == [.incremental, .full])
+        #expect(remote.last?.bytes == 10)
+    }
+
+    @Test func `adopta un archivo descargado sin sobrescribir`() throws {
+        try sandbox.write("uno", to: "tmp/a.tar.gz")
+        try sandbox.write("dos", to: "tmp/b.tar.gz")
+        let destination = sandbox.url.appending(path: "dst")
+        let name = "backup_proyecto_20261114_090507.tar.gz"
+        let placed = try ArchiveCatalog.adopt(sandbox.url.appending(path: "tmp/a.tar.gz"), named: name,
+                                              destinationRoot: destination, sourceName: "proyecto")
+        #expect(placed.path.hasSuffix("dst/proyecto/" + name))
+        #expect(throws: CocoaError.self) {
+            try ArchiveCatalog.adopt(sandbox.url.appending(path: "tmp/b.tar.gz"), named: name,
+                                     destinationRoot: destination, sourceName: "proyecto")
+        }
+        #expect(try String(contentsOf: placed, encoding: .utf8) == "uno")
+        #expect(throws: CocoaError.self) {
+            try ArchiveCatalog.adopt(sandbox.url.appending(path: "tmp/b.tar.gz"), named: "../x.tar.gz",
+                                     destinationRoot: destination, sourceName: "proyecto")
+        }
+    }
+
     @Test func `destino sin backups devuelve lista vacía`() throws {
         #expect(try ArchiveCatalog.list(destinationRoot: sandbox.url, sourceName: "nada").isEmpty)
     }

@@ -70,15 +70,30 @@ public struct BackupJob: Codable, Hashable, Sendable, Identifiable {
     public var destination: FolderReference
     public var exclusions: ExclusionRules
     public var history: [BackupRecord]
+    /// Subir cada backup nuevo a Google Drive (opcional; requiere cuenta conectada).
+    public var uploadsToDrive: Bool
 
     public init(id: UUID = UUID(), name: String, source: FolderReference, destination: FolderReference,
-                exclusions: ExclusionRules = .default, history: [BackupRecord] = []) {
+                exclusions: ExclusionRules = .default, history: [BackupRecord] = [], uploadsToDrive: Bool = false) {
         self.id = id
         self.name = name
         self.source = source
         self.destination = destination
         self.exclusions = exclusions
         self.history = history
+        self.uploadsToDrive = uploadsToDrive
+    }
+
+    /// Lee también los `jobs.json` anteriores a `uploadsToDrive`.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        name = try container.decode(String.self, forKey: .name)
+        source = try container.decode(FolderReference.self, forKey: .source)
+        destination = try container.decode(FolderReference.self, forKey: .destination)
+        exclusions = try container.decode(ExclusionRules.self, forKey: .exclusions)
+        history = try container.decode([BackupRecord].self, forKey: .history)
+        uploadsToDrive = try container.decodeIfPresent(Bool.self, forKey: .uploadsToDrive) ?? false
     }
 
     public var lastBackupDate: Date? { history.first?.date }

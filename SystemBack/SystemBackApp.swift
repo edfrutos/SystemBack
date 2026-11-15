@@ -25,7 +25,7 @@ struct SystemBackApp: App {
         }
 
         Settings {
-            SettingsView()
+            SettingsView().environment(model)
         }
     }
 }

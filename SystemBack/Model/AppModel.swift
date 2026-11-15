@@ -8,7 +8,7 @@ import SystemBackCore
 @Observable
 final class AppModel {
     struct Activity: Equatable {
-        enum Kind: Equatable { case backup(jobID: BackupJob.ID), restore }
+        enum Kind: Equatable { case backup(jobID: BackupJob.ID), restore, upload, download }
         var kind: Kind
         var title: String
         /// `nil` mientras no se conoce el total (barra indeterminada).
@@ -47,9 +47,15 @@ final class AppModel {
     private(set) var log: [LogEntry] = []
     var notice: Notice?
 
+    /// Google Drive: estado de la conexión y backups de cada trabajo en su carpeta de Drive.
+    private(set) var isDriveConnected = GoogleSession.isConnected
+    private(set) var driveEmail: String?
+    private(set) var isConnectingDrive = false
+    private(set) var driveArchives: [BackupJob.ID: [RemoteArchive]] = [:]
+
     private let store: JobStore?
     private var runningTask: Task<Void, Never>?
-    private let logger = Logger(subsystem: "com.efjdev.systemback", category: "model")
+    private let logger = Logger(subsystem: "com.edefrutos.systemback", category: "model")
 
     init(store: JobStore? = try? JobStore.standard()) {
         self.store = store
@@ -91,6 +97,31 @@ final class AppModel {
             archives[jobID] = []
             append(.warning, String(localized: "Couldn’t read the backups of “\(job.name)”: \(Self.describe(error))"))
         }
+        await refreshDrive(jobID: jobID)
+    }
+
+    func refreshDrive(jobID: BackupJob.ID) async {
+        guard isDriveConnected, let job = jobs.first(where: { $0.id == jobID }) else {
+            driveArchives[jobID] = nil
+            return
+        }
+        do {
+            driveArchives[jobID] = try await BackgroundWork.listDrive(of: job)
+        } catch {
+            driveArchives[jobID] = nil
+            handleDriveError(error, context: String(localized: "Couldn’t read Google Drive"))
+        }
+    }
+
+    /// Copia en Drive del backup local (mismo nombre), si existe.
+    func driveCopy(of archive: ArchiveInfo, jobID: BackupJob.ID) -> RemoteArchive? {
+        driveArchives[jobID]?.first { $0.name == archive.name }
+    }
+
+    /// Backups que están en Drive pero no en la carpeta de destino.
+    func driveOnlyArchives(jobID: BackupJob.ID) -> [RemoteArchive] {
+        let local = Set((archives[jobID] ?? []).map(\.name))
+        return (driveArchives[jobID] ?? []).filter { !local.contains($0.name) }
     }
 
     func moveToTrash(_ archive: ArchiveInfo, jobID: BackupJob.ID) {
@@ -141,7 +172,14 @@ final class AppModel {
             }
             do {
                 let output = try await BackgroundWork.backup(job, mode: mode, progress: continuation)
-                apply(output, to: jobID, mode: mode)
+                let created = apply(output, to: jobID, mode: mode)
+                if let created, let current = jobs.first(where: { $0.id == jobID }),
+                   current.uploadsToDrive, isDriveConnected {
+                    await refreshArchives(jobID: jobID)
+                    if let archive = archives[jobID]?.first(where: { $0.url == created }) {
+                        await upload(archive, of: current)
+                    }
+                }
             } catch is CancellationError {
                 append(.warning, String(localized: "Backup cancelled. No partial file was left."))
             } catch {
@@ -167,8 +205,11 @@ final class AppModel {
         }
     }
 
-    private func apply(_ output: BackgroundWork.BackupOutput, to jobID: BackupJob.ID, mode: BackgroundWork.BackupMode) {
-        guard let index = jobs.firstIndex(where: { $0.id == jobID }) else { return }
+    /// Devuelve la URL del backup creado (si se creó).
+    @discardableResult
+    private func apply(_ output: BackgroundWork.BackupOutput, to jobID: BackupJob.ID, mode: BackgroundWork.BackupMode) -> URL? {
+        guard let index = jobs.firstIndex(where: { $0.id == jobID }) else { return nil }
+        var createdURL: URL?
         if let renewed = output.renewedSource { jobs[index].source = renewed }
         if let renewed = output.renewedDestination { jobs[index].destination = renewed }
 
@@ -178,6 +219,7 @@ final class AppModel {
             notice = Notice(title: String(localized: "No Changes"),
                             message: String(localized: "Nothing changed since the last backup."))
         case let .created(result):
+            createdURL = result.archiveURL
             let recordKind: BackupRecord.Kind = if case .incremental = mode { .incremental } else { .full }
             jobs[index].record(BackupRecord(date: .now, kind: recordKind, archiveName: result.archiveURL.lastPathComponent,
                                             fileCount: result.fileCount, contentBytes: result.contentBytes,
@@ -201,6 +243,7 @@ final class AppModel {
                                body: String(localized: "\(jobs[index].name): \(result.fileCount) files saved."))
         }
         persist()
+        return createdURL
     }
 
     // MARK: - Restauración
@@ -299,6 +342,171 @@ final class AppModel {
         }
     }
 
+    // MARK: - Google Drive
+
+    func connectDrive() {
+        guard !isConnectingDrive else { return }
+        isConnectingDrive = true
+        Task {
+            defer { isConnectingDrive = false }
+            do {
+                let tokens = try await GoogleSignIn().signIn()
+                try await GoogleSession.shared.store(tokens)
+                isDriveConnected = true
+                driveEmail = try? await GoogleSession.drive.accountEmail()
+                append(.success, String(localized: "Google Drive connected."))
+                for job in jobs { await refreshDrive(jobID: job.id) }
+            } catch is CancellationError {
+                // El usuario cerró la ventana de Google: no es un error.
+            } catch {
+                append(.error, Self.describe(error))
+                notice = Notice(title: String(localized: "Couldn’t Connect Google Drive"), message: Self.describe(error))
+            }
+        }
+    }
+
+    func disconnectDrive() {
+        Task {
+            await GoogleSession.shared.disconnect()
+            isDriveConnected = false
+            driveEmail = nil
+            driveArchives.removeAll()
+            for index in jobs.indices { jobs[index].uploadsToDrive = false }
+            persist()
+            append(.info, String(localized: "Google Drive disconnected. Backups already in Drive were kept."))
+        }
+    }
+
+    /// Carga el correo de la cuenta al abrir Ajustes (no se guarda en disco).
+    func loadDriveAccount() async {
+        guard isDriveConnected, driveEmail == nil else { return }
+        driveEmail = try? await GoogleSession.drive.accountEmail()
+    }
+
+    func setUploadsToDrive(_ enabled: Bool, jobID: BackupJob.ID) {
+        guard let index = jobs.firstIndex(where: { $0.id == jobID }) else { return }
+        jobs[index].uploadsToDrive = enabled
+        persist()
+    }
+
+    func startUpload(_ archive: ArchiveInfo, jobID: BackupJob.ID) {
+        guard !isBusy, let job = jobs.first(where: { $0.id == jobID }) else { return }
+        runningTask = Task {
+            defer { runningTask = nil }
+            await upload(archive, of: job)
+        }
+    }
+
+    /// Sube un backup mostrando el progreso en Actividad. Los errores se informan, no se propagan:
+    /// el backup local ya está guardado.
+    private func upload(_ archive: ArchiveInfo, of job: BackupJob) async {
+        let title = String(localized: "Uploading \(archive.name) to Google Drive")
+        activity = Activity(kind: .upload, title: title, fraction: 0)
+        append(.info, title)
+        let (stream, continuation) = AsyncStream<Double>.makeStream(bufferingPolicy: .bufferingNewest(1))
+        let progressTask = Task { for await value in stream { activity?.fraction = value } }
+        defer {
+            progressTask.cancel()
+            activity = nil
+        }
+        do {
+            _ = try await BackgroundWork.uploadToDrive(archive, of: job, progress: continuation)
+            append(.success, String(localized: "\(archive.name) uploaded to Google Drive."))
+        } catch is CancellationError {
+            append(.warning, String(localized: "Upload cancelled. The backup is still saved on this Mac."))
+        } catch let error as URLError where error.code == .cancelled {
+            append(.warning, String(localized: "Upload cancelled. The backup is still saved on this Mac."))
+        } catch {
+            handleDriveError(error, context: String(localized: "Upload to Google Drive Failed"))
+        }
+        await refreshDrive(jobID: job.id)
+    }
+
+    func startDownload(_ remote: RemoteArchive, jobID: BackupJob.ID) {
+        guard !isBusy else { return }
+        runningTask = Task {
+            defer { runningTask = nil }
+            _ = await download(remote, jobID: jobID)
+        }
+    }
+
+    /// Descarga el backup al destino y lo restaura en una carpeta nueva.
+    func startRestoreFromDrive(_ remote: RemoteArchive, jobID: BackupJob.ID, intoParent parent: URL) {
+        guard !isBusy else { return }
+        runningTask = Task {
+            // Cancelar durante la descarga cancela esta tarea; la restauración se registra como tarea propia.
+            guard let archive = await download(remote, jobID: jobID) else {
+                runningTask = nil
+                return
+            }
+            startRestore(archive, jobID: jobID, intoParent: parent)
+        }
+    }
+
+    /// Descarga el backup al destino y lo restaura en la carpeta de origen.
+    func startRestoreInPlaceFromDrive(_ remote: RemoteArchive, jobID: BackupJob.ID) {
+        guard !isBusy else { return }
+        runningTask = Task {
+            // Cancelar durante la descarga cancela esta tarea; la restauración se registra como tarea propia.
+            guard let archive = await download(remote, jobID: jobID) else {
+                runningTask = nil
+                return
+            }
+            startRestoreInPlace(archive, jobID: jobID)
+        }
+    }
+
+    /// Descarga a la carpeta de destino (queda como backup local) y devuelve el backup ya listado.
+    private func download(_ remote: RemoteArchive, jobID: BackupJob.ID) async -> ArchiveInfo? {
+        guard let job = jobs.first(where: { $0.id == jobID }) else { return nil }
+        let title = String(localized: "Downloading \(remote.name) from Google Drive")
+        activity = Activity(kind: .download, title: title)
+        append(.info, title)
+        defer { activity = nil }
+        do {
+            let url = try await BackgroundWork.downloadFromDrive(remote, of: job)
+            append(.success, String(localized: "\(remote.name) downloaded to the destination folder."))
+            await refreshArchives(jobID: jobID)
+            return archives[jobID]?.first { $0.url.standardizedFileURL == url.standardizedFileURL }
+                ?? archives[jobID]?.first { $0.name == remote.name }
+        } catch is CancellationError {
+            append(.warning, String(localized: "Download cancelled. Nothing was saved."))
+        } catch let error as URLError where error.code == .cancelled {
+            append(.warning, String(localized: "Download cancelled. Nothing was saved."))
+        } catch CocoaError.fileWriteFileExists {
+            let message = String(localized: "A backup with that name is already in the destination folder.")
+            append(.error, message)
+            notice = Notice(title: String(localized: "Download from Google Drive Failed"), message: message)
+        } catch {
+            handleDriveError(error, context: String(localized: "Download from Google Drive Failed"))
+        }
+        return nil
+    }
+
+    /// A la papelera de Drive. El backup local, si existe, no se toca.
+    func trashInDrive(_ remote: RemoteArchive, jobID: BackupJob.ID) {
+        guard !isBusy else { return }
+        Task {
+            do {
+                try await BackgroundWork.trashInDrive(remote)
+                append(.info, String(localized: "\(remote.name) moved to the Google Drive trash."))
+            } catch {
+                handleDriveError(error, context: String(localized: "Couldn’t Move to the Google Drive Trash"))
+            }
+            await refreshDrive(jobID: jobID)
+        }
+    }
+
+    private func handleDriveError(_ error: any Error, context: String) {
+        if case GoogleAPIError.authorizationRevoked = error {
+            isDriveConnected = false
+            driveEmail = nil
+            driveArchives.removeAll()
+        }
+        append(.error, "\(context): \(Self.describe(error))")
+        notice = Notice(title: context, message: Self.describe(error))
+    }
+
     func cancelActivity() {
         runningTask?.cancel()
     }
@@ -338,6 +546,16 @@ final class AppModel {
             String(localized: "The archive contains an unsafe path (\(path)). Nothing was restored.")
         case ArchiveError.checksumMismatch, ArchiveError.corrupted, ArchiveError.truncatedTar, ArchiveError.invalidTarHeader:
             String(localized: "The archive is damaged or incomplete. Nothing was restored.")
+        case GoogleAPIError.notConnected:
+            String(localized: "Google Drive isn’t connected. Connect it in Settings.")
+        case GoogleAPIError.authorizationRevoked:
+            String(localized: "Google no longer allows SystemBack to access your Drive. Connect it again in Settings.")
+        case GoogleAPIError.http(let status, let message):
+            String(localized: "Google Drive returned an error (\(status)): \(message)")
+        case GoogleAPIError.invalidResponse, GoogleAPIError.invalidCallback:
+            String(localized: "Google returned an unexpected response. Try again.")
+        case let error as URLError where error.code == .notConnectedToInternet:
+            String(localized: "There’s no internet connection. The backup is still saved on this Mac.")
         case ArchiveError.notGzip:
             String(localized: "This file isn’t a .tar.gz backup.")
         default:

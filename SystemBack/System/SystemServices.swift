@@ -6,7 +6,7 @@ import UserNotifications
 /// Notificaciones locales. El permiso se pide en contexto (primer backup), nunca al arrancar.
 enum Notifications {
     // Logger es Sendable: se puede usar desde el callback de UNUserNotificationCenter.
-    private nonisolated static let log = Logger(subsystem: "com.efjdev.systemback", category: "notifications")
+    private nonisolated static let log = Logger(subsystem: "com.edefrutos.systemback", category: "notifications")
 
     static func requestAuthorizationIfNeeded() async {
         let center = UNUserNotificationCenter.current()
@@ -50,6 +50,6 @@ enum LoginItem {
 }
 
 enum AppLinks {
-    static let privacyPolicy = URL(string: "https://systemback.efjdev.com/privacy")!
-    static let support = URL(string: "https://systemback.efjdev.com/support")!
+    static let privacyPolicy = URL(string: "https://efjdev.com/privacidad/")!
+    static let support = URL(string: "https://efjdev.com/soporte/")!
 }
