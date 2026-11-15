@@ -49,7 +49,6 @@ struct JobDetailView: View {
                                symbol: "externaldrive.fill.badge.plus", tint: Theme.full) {
                         model.startBackup(jobID: job.id, action: .full)
                     }
-                    .keyboardShortcut("b", modifiers: .command)
                     .help("Save a complete copy of the folder (⌘B)")
 
                     ActionCard(title: "Replace Last Backup",
@@ -108,6 +107,14 @@ struct JobDetailView: View {
                     }
                 } else {
                     ProgressView().frame(maxWidth: .infinity)
+                }
+                if let issue = model.driveIssues[job.id] {
+                    HStack {
+                        Label(issue, systemImage: "exclamationmark.icloud")
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Button("Try Again") { Task { await model.refreshDrive(jobID: job.id) } }
+                    }
                 }
             } header: {
                 HStack {

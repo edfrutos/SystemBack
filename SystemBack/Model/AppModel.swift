@@ -52,6 +52,9 @@ final class AppModel {
     private(set) var driveEmail: String?
     private(set) var isConnectingDrive = false
     private(set) var driveArchives: [BackupJob.ID: [RemoteArchive]] = [:]
+    /// Último fallo al leer Drive por trabajo: se muestra en la lista, sin alerta
+    /// (la lectura es automática; una alerta interrumpiría sin que el usuario haya pedido nada).
+    private(set) var driveIssues: [BackupJob.ID: String] = [:]
 
     private let store: JobStore?
     private var runningTask: Task<Void, Never>?
@@ -103,13 +106,18 @@ final class AppModel {
     func refreshDrive(jobID: BackupJob.ID) async {
         guard isDriveConnected, let job = jobs.first(where: { $0.id == jobID }) else {
             driveArchives[jobID] = nil
+            driveIssues[jobID] = nil
             return
         }
         do {
             driveArchives[jobID] = try await BackgroundWork.listDrive(of: job)
+            driveIssues[jobID] = nil
         } catch {
             driveArchives[jobID] = nil
-            handleDriveError(error, context: String(localized: "Couldn’t read Google Drive"))
+            handleDriveError(error, context: String(localized: "Couldn’t read Google Drive"), alert: false)
+            driveIssues[jobID] = isDriveConnected
+                ? String(localized: "Couldn’t read Google Drive: \(Self.describe(error))")
+                : nil
         }
     }
 
@@ -371,6 +379,7 @@ final class AppModel {
             isDriveConnected = false
             driveEmail = nil
             driveArchives.removeAll()
+            driveIssues.removeAll()
             for index in jobs.indices { jobs[index].uploadsToDrive = false }
             persist()
             append(.info, String(localized: "Google Drive disconnected. Backups already in Drive were kept."))
@@ -497,14 +506,19 @@ final class AppModel {
         }
     }
 
-    private func handleDriveError(_ error: any Error, context: String) {
-        if case GoogleAPIError.authorizationRevoked = error {
+    private func handleDriveError(_ error: any Error, context: String, alert: Bool = true) {
+        let revoked = if case GoogleAPIError.authorizationRevoked = error { true } else { false }
+        if revoked {
             isDriveConnected = false
             driveEmail = nil
             driveArchives.removeAll()
+            driveIssues.removeAll()
         }
         append(.error, "\(context): \(Self.describe(error))")
-        notice = Notice(title: context, message: Self.describe(error))
+        // Acceso retirado: se avisa siempre, porque hay que volver a conectar en Ajustes.
+        if alert || revoked {
+            notice = Notice(title: context, message: Self.describe(error))
+        }
     }
 
     func cancelActivity() {

@@ -242,3 +242,16 @@ Leyenda de estado: `[ ]` pendiente · `[~]` en curso · `[x]` hecho · `[!]` blo
   - en filas locales con copia en Drive, menú contextual para mandar esa copia a la papelera de Drive.
 - 47 tests en el núcleo. 156 cadenas en el catálogo.
 - Pendiente: probar la fase B con la cuenta real.
+
+### 2026-11-15 (icono, revisión de diseño y capturas)
+
+- **Icono:** sale de `assets/SystemBack.jpg`, la versión sin texto (las HIG piden texto solo si es esencial).
+  - Recortado a cuadrado y escalado a 1024 px, sin máscara. El sistema aplica las esquinas.
+  - Se generan los tamaños de 16 a 1024 en `AppIcon.appiconset`.
+- **Revisión de diseño** en `REVISION_DISENO.md`. Corregido:
+  - órdenes en la barra de menús con atajos (`AppCommands.swift`);
+  - el fallo al leer Drive se muestra en la lista, sin alerta;
+  - contraste del texto de las etiquetas;
+  - el aviso de `onChange`.
+- **Pendiente para la v1.1:** icono simplificado por capas en Icon Composer.
+- **Capturas** documentadas en `CAPTURAS.md`.

@@ -187,13 +187,7 @@ Your backups don't depend on SystemBack: they're plain .tar.gz files.
 
 ### Capturas (Mac)
 
-- Medidas válidas, en formato 16:10: 1280×800, 1440×900, 2560×1600 o 2880×1800.
-- Mínimo 1 y máximo 10.
-- Propuesta:
-  1. lista de backups;
-  2. backup en curso con el panel Actividad;
-  3. confirmación de restaurar en la carpeta original;
-  4. Ajustes.
+Lista, preparación y requisitos en [`CAPTURAS.md`](CAPTURAS.md): seis capturas a 2880×1800, con datos de demostración.
 
 ## 10. Comprobación de guías antes de enviar
 

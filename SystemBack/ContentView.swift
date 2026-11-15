@@ -79,6 +79,13 @@ struct ContentView: View {
             // Selecciona el trabajo recién creado.
             if newCount > oldCount { selection = model.jobs.last?.id }
         }
+        .focusedSceneValue(\.mainWindowActions, MainWindowActions(
+            selectedJobID: selection,
+            showsActivity: showsActivity,
+            newJob: { isAddingJob = true },
+            restoreFromFile: { isRestoring = true },
+            toggleActivity: { showsActivity.toggle() }
+        ))
         .frame(minWidth: 760, minHeight: 460)
     }
 }

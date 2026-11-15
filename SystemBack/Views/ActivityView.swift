@@ -34,8 +34,8 @@ struct ActivityView: View {
                         LogRow(entry: entry).id(entry.id)
                     }
                     .listStyle(.plain)
-                    .onChange(of: model.log.last?.id) { _, last in
-                        if let last { withAnimation { proxy.scrollTo(last, anchor: .bottom) } }
+                    .onChange(of: model.log.count) {
+                        if let last = model.log.last?.id { withAnimation { proxy.scrollTo(last, anchor: .bottom) } }
                     }
                 }
             }

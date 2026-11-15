@@ -18,6 +18,7 @@ struct SystemBackApp: App {
                 .environment(model)
         }
         .commands {
+            AppCommands(model: model)
             CommandGroup(replacing: .help) {
                 Link("SystemBack Privacy Policy", destination: AppLinks.privacyPolicy)
                 Link("SystemBack Support", destination: AppLinks.support)

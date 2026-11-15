@@ -557,6 +557,38 @@
         }
       }
     },
+    "Backup": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Backup"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Backup"
+          }
+        }
+      }
+    },
+    "Backup cancelled. No partial file was left.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Backup cancelled. No partial file was left."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Backup cancelado. No ha quedado ningún archivo a medias."
+          }
+        }
+      }
+    },
     "Backup Complete": {
       "localizations": {
         "en": {
@@ -585,22 +617,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "El backup ha fallado"
-          }
-        }
-      }
-    },
-    "Backup cancelled. No partial file was left.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Backup cancelled. No partial file was left."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Backup cancelado. No ha quedado ningún archivo a medias."
           }
         }
       }
@@ -861,22 +877,6 @@
         }
       }
     },
-    "Couldn’t Move to Trash": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Couldn’t Move to Trash"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No se ha podido mover a la Papelera"
-          }
-        }
-      }
-    },
     "Couldn’t Move to the Google Drive Trash": {
       "localizations": {
         "en": {
@@ -893,18 +893,18 @@
         }
       }
     },
-    "Couldn’t Save Changes": {
+    "Couldn’t Move to Trash": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Couldn’t Save Changes"
+            "value": "Couldn’t Move to Trash"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "No se han podido guardar los cambios"
+            "value": "No se ha podido mover a la Papelera"
           }
         }
       }
@@ -925,6 +925,22 @@
         }
       }
     },
+    "Couldn’t read Google Drive: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn’t read Google Drive: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se ha podido leer Google Drive: %@"
+          }
+        }
+      }
+    },
     "Couldn’t read the backups of “%@”: %@": {
       "localizations": {
         "en": {
@@ -941,18 +957,18 @@
         }
       }
     },
-    "Create Job": {
+    "Couldn’t Save Changes": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Create Job"
+            "value": "Couldn’t Save Changes"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Crear trabajo"
+            "value": "No se han podido guardar los cambios"
           }
         }
       }
@@ -969,6 +985,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Crear un trabajo de backup: elige una carpeta y dónde guardar sus backups"
+          }
+        }
+      }
+    },
+    "Create Job": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create Job"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crear trabajo"
           }
         }
       }
@@ -1373,6 +1405,22 @@
         }
       }
     },
+    "Hide Activity": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hide Activity"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ocultar actividad"
+          }
+        }
+      }
+    },
     "Information": {
       "localizations": {
         "en": {
@@ -1533,22 +1581,6 @@
         }
       }
     },
-    "Move to Trash": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Move to Trash"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mover a la Papelera"
-          }
-        }
-      }
-    },
     "Move to the Google Drive Trash": {
       "localizations": {
         "en": {
@@ -1561,6 +1593,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mover a la papelera de Google Drive"
+          }
+        }
+      }
+    },
+    "Move to Trash": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Move to Trash"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mover a la Papelera"
           }
         }
       }
@@ -1645,22 +1693,6 @@
         }
       }
     },
-    "No Changes": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No Changes"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sin cambios"
-          }
-        }
-      }
-    },
     "No backups in the destination folder yet.": {
       "localizations": {
         "en": {
@@ -1673,6 +1705,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Todavía no hay backups en la carpeta de destino."
+          }
+        }
+      }
+    },
+    "No Changes": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Changes"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin cambios"
           }
         }
       }
@@ -1789,22 +1837,6 @@
         }
       }
     },
-    "Previous Backup Kept": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Previous Backup Kept"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Se ha conservado el backup anterior"
-          }
-        }
-      }
-    },
     "Previous backup %@ moved to the Trash.": {
       "localizations": {
         "en": {
@@ -1821,6 +1853,22 @@
         }
       }
     },
+    "Previous Backup Kept": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previous Backup Kept"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se ha conservado el backup anterior"
+          }
+        }
+      }
+    },
     "Refresh": {
       "localizations": {
         "en": {
@@ -1833,6 +1881,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Actualizar lista"
+          }
+        }
+      }
+    },
+    "Refresh Backups": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refresh Backups"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actualizar lista de backups"
           }
         }
       }
@@ -1917,54 +1981,6 @@
         }
       }
     },
-    "Restore Complete": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Restore Complete"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Restauración completada"
-          }
-        }
-      }
-    },
-    "Restore Failed": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Restore Failed"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La restauración ha fallado"
-          }
-        }
-      }
-    },
-    "Restore Here": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Restore Here"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Restaurar aquí"
-          }
-        }
-      }
-    },
     "Restore a .tar.gz backup file into a new folder": {
       "localizations": {
         "en": {
@@ -2013,6 +2029,38 @@
         }
       }
     },
+    "Restore Complete": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore Complete"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restauración completada"
+          }
+        }
+      }
+    },
+    "Restore Failed": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore Failed"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La restauración ha fallado"
+          }
+        }
+      }
+    },
     "Restore from File…": {
       "localizations": {
         "en": {
@@ -2025,6 +2073,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Restaurar desde archivo…"
+          }
+        }
+      }
+    },
+    "Restore Here": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore Here"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurar aquí"
           }
         }
       }
@@ -2285,6 +2349,22 @@
         }
       }
     },
+    "Show Activity": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show Activity"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar actividad"
+          }
+        }
+      }
+    },
     "Show in Finder": {
       "localizations": {
         "en": {
@@ -2365,6 +2445,22 @@
         }
       }
     },
+    "SystemBack can only see the files it creates in your Drive. Backups go directly from this Mac to your account.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SystemBack can only see the files it creates in your Drive. Backups go directly from this Mac to your account."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SystemBack solo puede ver los archivos que crea en tu Drive. Los backups van directamente de este Mac a tu cuenta."
+          }
+        }
+      }
+    },
     "SystemBack Privacy Policy": {
       "localizations": {
         "en": {
@@ -2393,22 +2489,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Soporte de SystemBack"
-          }
-        }
-      }
-    },
-    "SystemBack can only see the files it creates in your Drive. Backups go directly from this Mac to your account.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SystemBack can only see the files it creates in your Drive. Backups go directly from this Mac to your account."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SystemBack solo puede ver los archivos que crea en tu Drive. Los backups van directamente de este Mac a tu cuenta."
           }
         }
       }
@@ -2589,18 +2669,18 @@
         }
       }
     },
-    "Upload New Backups to Google Drive": {
+    "Try Again": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Upload New Backups to Google Drive"
+            "value": "Try Again"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Subir los backups nuevos a Google Drive"
+            "value": "Reintentar"
           }
         }
       }
@@ -2633,6 +2713,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Subida cancelada. El backup sigue guardado en este Mac."
+          }
+        }
+      }
+    },
+    "Upload New Backups to Google Drive": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upload New Backups to Google Drive"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subir los backups nuevos a Google Drive"
           }
         }
       }

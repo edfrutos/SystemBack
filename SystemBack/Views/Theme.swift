@@ -45,19 +45,26 @@ enum Theme {
 }
 
 /// Etiqueta tipo cápsula: icono + texto + color (como los badges de la app original).
+/// El color va en el icono y el fondo; el texto usa el color principal para cumplir 4,5:1
+/// (verde o azul del sistema sobre su propio tinte no llega en texto pequeño).
 struct Badge: View {
     let title: LocalizedStringKey
     let symbol: String
     let tint: Color
 
     var body: some View {
-        Label(title, systemImage: symbol)
-            .font(.caption.weight(.medium))
-            .labelStyle(.titleAndIcon)
-            .padding(.horizontal, 7)
-            .padding(.vertical, 2)
-            .foregroundStyle(tint)
-            .background(tint.opacity(0.14), in: .capsule)
+        HStack(spacing: 4) {
+            Image(systemName: symbol)
+                .foregroundStyle(tint)
+                .accessibilityHidden(true)
+            Text(title)
+                .foregroundStyle(.primary)
+        }
+        .font(.caption.weight(.medium))
+        .padding(.horizontal, 7)
+        .padding(.vertical, 2)
+        .background(tint.opacity(0.14), in: .capsule)
+        .accessibilityElement(children: .combine)
     }
 }
 
