@@ -52,7 +52,7 @@ Leyenda de estado: `[ ]` pendiente · `[~]` en curso · `[x]` hecho · `[!]` blo
 - [ ] App creada en App Store Connect (confirma que el nombre "SystemBack" está libre)
 - [ ] Firma automática de Xcode operativa (Apple Distribution + perfil Mac App Store)
 - [ ] Página `efjdev.com/systemback/` y sección `efjdev.com/privacidad/` (soporte: `efjdev.com/soporte/`)
-- [ ] Google Cloud: proyecto de producción, Drive API, pantalla de consentimiento externa, dominio `efjdev.com` verificado, verificación de marca iniciada
+- [x] Google Cloud: proyecto de producción, Drive API, pantalla de consentimiento externa, dominio `efjdev.com` verificado, marca verificada (2026-11-16)
 
 ### F1 — Seguridad e higiene
 - [x] `credentials/` excluido de `setup_py2app.py` (solo se empaqueta `client_secrets.json`) + test
@@ -262,3 +262,10 @@ Leyenda de estado: `[ ]` pendiente · `[~]` en curso · `[x]` hecho · `[!]` blo
 - La portada (página 25) tiene la tarjeta «SystemBack · Mac App Store · próximamente», que enlaza a la página 136.
 - La sección de SystemBack en `/privacidad/` ya describía Drive correctamente (OAuth, `drive.file`, Llavero, uso limitado). No se ha tocado.
 - Siguiente paso: en Google Auth Platform › Centro de verificación, solicitar la verificación de marca. Las URLs de inicio y de privacidad ya responden.
+
+### 2026-11-16 (Google)
+
+- Google Auth Platform › Centro de verificación: «Se verificó la información de tu marca y se muestra a los usuarios». La pantalla de consentimiento muestra SystemBack con el dominio `efjdev.com`.
+- Permiso único `drive.file` (no sensible): no hace falta revisión de seguridad.
+- Comprobar en Público que el estado de publicación es «En producción». En «En prueba» solo entran los usuarios de prueba y el token de renovación caduca a los 7 días.
+- Tras pasar a producción: desconectar y volver a conectar Drive en la app para obtener un token de producción.
