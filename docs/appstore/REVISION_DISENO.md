@@ -30,5 +30,9 @@ Valoración: **Buena**. Es una utilidad discreta: controles del sistema, colores
 - **Color con significado fijo**, nunca solo: siempre va con icono y texto.
 - **Mensajes de error accionables:** dicen qué pasó y qué hacer, sin disculparse.
 - **Restaurar en la carpeta original** con una confirmación que explica el efecto. Lo sustituido va a la Papelera, así que se puede deshacer.
-- **Aspecto y textos:** claro y oscuro con colores del sistema, sin selector de aspecto propio. Ajustes en el menú de la app (⌘,).
+- **Aspecto y textos:** claro y oscuro con colores del sistema. Ajustes en el menú de la app (⌘,).
+
+## Decisiones que se apartan de las HIG
+
+- **Selector de aspecto en Ajustes** (Automático, Claro, Oscuro), añadido el 2026-11-16 a petición del usuario. `dark-mode.md › Best practices`: «Avoid offering an app-specific appearance setting». Se mitiga así: el valor por defecto es «Automático», que sigue al sistema (también el cambio de día y noche), y el cambio se aplica al momento sin reiniciar. No es motivo de rechazo en la revisión de la App Store.
 - **Icono:** la versión sin texto, porque las HIG piden texto solo si es esencial. Se entrega cuadrado y sin máscara, y el sistema aplica las esquinas: `app-icons.md › Icon shape`.

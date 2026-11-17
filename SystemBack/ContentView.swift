@@ -96,12 +96,8 @@ private struct JobRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(job.name)
-            Group {
-                if let date = job.lastBackupDate {
-                    Text("Last backup \(date, format: .relative(presentation: .named))")
-                } else {
-                    Text("Never backed up")
-                }
+            TimelineView(.everyMinute) { context in
+                Text(LastBackupText.string(for: job.lastBackupDate, now: context.date))
             }
             .font(.caption)
             .foregroundStyle(.secondary)

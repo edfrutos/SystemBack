@@ -1,4 +1,5 @@
 import SwiftUI
+import SystemBackCore
 import UniformTypeIdentifiers
 
 /// Fila "etiqueta · ruta · Elegir…" con su propio selector de carpeta o fichero.
@@ -11,7 +12,7 @@ private struct LocationPicker: View {
     var body: some View {
         LabeledContent(title) {
             HStack {
-                Text(url?.path ?? String(localized: "Not selected"))
+                Text(url.map { PathDisplay.abbreviatingHome($0.path) } ?? String(localized: "Not selected"))
                     .lineLimit(1)
                     .truncationMode(.middle)
                     .foregroundStyle(url == nil ? .secondary : .primary)

@@ -18,15 +18,23 @@ struct JobDetailView: View {
     }
 
     var body: some View {
+        // Mismo reloj que la barra lateral: los dos «Último backup hace…» coinciden.
+        TimelineView(.everyMinute) { context in
+            content
+                .navigationSubtitle(LastBackupText.string(for: job.lastBackupDate, now: context.date))
+        }
+    }
+
+    private var content: some View {
         Form {
             Section {
                 LabeledContent {
-                    Text(job.source.displayPath).textSelection(.enabled)
+                    Text(job.source.shortPath).textSelection(.enabled)
                 } label: {
                     Label("Source", systemImage: "folder")
                 }
                 LabeledContent {
-                    Text(job.destination.displayPath).textSelection(.enabled)
+                    Text(job.destination.shortPath).textSelection(.enabled)
                 } label: {
                     Label("Destination", systemImage: "externaldrive")
                 }
@@ -131,7 +139,6 @@ struct JobDetailView: View {
         }
         .formStyle(.grouped)
         .navigationTitle(job.name)
-        .navigationSubtitle(lastBackupText)
         .task(id: job.id) { await model.refreshArchives(jobID: job.id) }
         .confirmationDialog(
             "Restore to the Original Folder?",
@@ -147,9 +154,9 @@ struct JobDetailView: View {
             Button("Cancel", role: .cancel) {}
         } message: { entry in
             if case .remote = entry {
-                Text("The backup is downloaded to the destination folder first. Files from \(entry.name) will be copied into \(job.source.displayPath). Files with different content are moved to the Trash first. Files that aren’t in the backup are left as they are.")
+                Text("The backup is downloaded to the destination folder first. Files from \(entry.name) will be copied into \(job.source.shortPath). Files with different content are moved to the Trash first. Files that aren’t in the backup are left as they are.")
             } else {
-                Text("Files from \(entry.name) will be copied into \(job.source.displayPath). Files with different content are moved to the Trash first. Files that aren’t in the backup are left as they are.")
+                Text("Files from \(entry.name) will be copied into \(job.source.shortPath). Files with different content are moved to the Trash first. Files that aren’t in the backup are left as they are.")
             }
         }
     }
@@ -163,14 +170,6 @@ struct JobDetailView: View {
         switch entry {
         case let .local(archive, _): model.startRestore(archive, jobID: job.id, intoParent: parent)
         case let .remote(remote): model.startRestoreFromDrive(remote, jobID: job.id, intoParent: parent)
-        }
-    }
-
-    private var lastBackupText: String {
-        if let date = job.lastBackupDate {
-            String(localized: "Last backup \(date.formatted(.relative(presentation: .named)))")
-        } else {
-            String(localized: "Never backed up")
         }
     }
 }
@@ -220,27 +219,33 @@ private struct ArchiveRow: View {
         HStack(spacing: 10) {
             ArchiveSummary(kind: archive.kind, date: archive.date, name: archive.name)
             Spacer()
-            Badge(title: "Local", symbol: "internaldrive", tint: .blue)
-                .help("Saved in the destination folder on this Mac")
-            if inDrive {
-                Badge(title: "Drive", symbol: "icloud", tint: .indigo)
-                    .help("A copy is in your Google Drive")
-            }
+            LocationBadges(local: true, drive: inDrive, driveHelp: "A copy is in your Google Drive")
             SizeText(bytes: archive.bytes)
             // Acciones visibles (también en el menú contextual), sin depender de un menú desplegable.
-            HStack(spacing: 2) {
-                if canUpload && !inDrive {
-                    Button("Upload to Google Drive", systemImage: "icloud.and.arrow.up", action: upload)
-                        .help("Upload a copy of this backup to Google Drive")
+            // Cada acción tiene su hueco fijo: los iconos quedan en columna aunque falte alguno.
+            HStack(spacing: 0) {
+                ActionSlot {
+                    if canUpload && !inDrive {
+                        Button("Upload to Google Drive", systemImage: "icloud.and.arrow.up", action: upload)
+                            .help("Upload a copy of this backup to Google Drive")
+                    }
                 }
-                Button("Restore to Original Folder…", systemImage: "arrow.uturn.backward", action: restoreInPlace)
-                    .help("Restore missing or changed files into the original folder")
-                Button("Restore…", systemImage: "folder.badge.plus", action: restore)
-                    .help("Restore this backup into a new folder")
-                Button("Show in Finder", systemImage: "magnifyingglass", action: reveal)
-                    .help("Show in Finder")
-                Button("Move to Trash", systemImage: "trash", action: trash)
-                    .help("Move this backup to the Trash")
+                ActionSlot {
+                    Button("Restore to Original Folder…", systemImage: "arrow.uturn.backward", action: restoreInPlace)
+                        .help("Restore missing or changed files into the original folder")
+                }
+                ActionSlot {
+                    Button("Restore…", systemImage: "folder.badge.plus", action: restore)
+                        .help("Restore this backup into a new folder")
+                }
+                ActionSlot {
+                    Button("Show in Finder", systemImage: "magnifyingglass", action: reveal)
+                        .help("Show in Finder")
+                }
+                ActionSlot {
+                    Button("Move to Trash", systemImage: "trash", action: trash)
+                        .help("Move this backup to the Trash")
+                }
             }
             .labelStyle(.iconOnly)
             .buttonStyle(.borderless)
@@ -279,18 +284,28 @@ private struct DriveArchiveRow: View {
         HStack(spacing: 10) {
             ArchiveSummary(kind: archive.kind, date: archive.date, name: archive.name)
             Spacer()
-            Badge(title: "Drive", symbol: "icloud", tint: .indigo)
-                .help("Only in your Google Drive. It isn’t in the destination folder on this Mac")
+            LocationBadges(local: false, drive: true,
+                           driveHelp: "Only in your Google Drive. It isn’t in the destination folder on this Mac")
             SizeText(bytes: archive.bytes)
-            HStack(spacing: 2) {
-                Button("Download to This Mac", systemImage: "icloud.and.arrow.down", action: download)
-                    .help("Download this backup to the destination folder")
-                Button("Restore to Original Folder…", systemImage: "arrow.uturn.backward", action: restoreInPlace)
-                    .help("Download, then restore missing or changed files into the original folder")
-                Button("Restore…", systemImage: "folder.badge.plus", action: restore)
-                    .help("Download, then restore this backup into a new folder")
-                Button("Move to the Google Drive Trash", systemImage: "trash", action: trash)
-                    .help("Move this backup to the Google Drive trash")
+            // Mismos huecos que en las filas locales; «Mostrar en Finder» no aplica y queda vacío.
+            HStack(spacing: 0) {
+                ActionSlot {
+                    Button("Download to This Mac", systemImage: "icloud.and.arrow.down", action: download)
+                        .help("Download this backup to the destination folder")
+                }
+                ActionSlot {
+                    Button("Restore to Original Folder…", systemImage: "arrow.uturn.backward", action: restoreInPlace)
+                        .help("Download, then restore missing or changed files into the original folder")
+                }
+                ActionSlot {
+                    Button("Restore…", systemImage: "folder.badge.plus", action: restore)
+                        .help("Download, then restore this backup into a new folder")
+                }
+                ActionSlot {}
+                ActionSlot {
+                    Button("Move to the Google Drive Trash", systemImage: "trash", action: trash)
+                        .help("Move this backup to the Google Drive trash")
+                }
             }
             .labelStyle(.iconOnly)
             .buttonStyle(.borderless)
@@ -328,6 +343,53 @@ private struct ArchiveSummary: View {
     }
 }
 
+/// Anchos fijos de las columnas de la lista, para que todas las filas queden alineadas.
+private enum RowColumns {
+    static let badge: CGFloat = 66
+    static let size: CGFloat = 80
+    static let action: CGFloat = 24
+}
+
+/// Columna de ubicación: «Local» siempre en el primer hueco y «Drive» en el segundo,
+/// también cuando la fila solo está en Drive.
+private struct LocationBadges: View {
+    let local: Bool
+    let drive: Bool
+    let driveHelp: LocalizedStringKey
+
+    var body: some View {
+        // ZStack y no Group: un Group vacío no ocupa sitio (el frame se aplica a sus hijos),
+        // y el hueco tiene que existir aunque la etiqueta no se muestre.
+        HStack(spacing: 6) {
+            ZStack(alignment: .leading) {
+                if local {
+                    Badge(title: "Local", symbol: "internaldrive", tint: .blue)
+                        .help("Saved in the destination folder on this Mac")
+                }
+            }
+            .frame(width: RowColumns.badge, alignment: .leading)
+            ZStack(alignment: .leading) {
+                if drive {
+                    Badge(title: "Drive", symbol: "icloud", tint: .indigo)
+                        .help(driveHelp)
+                }
+            }
+            .frame(width: RowColumns.badge, alignment: .leading)
+        }
+    }
+}
+
+/// Hueco de ancho fijo para un botón de acción (vacío si la acción no aplica a la fila).
+private struct ActionSlot<Content: View>: View {
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        // ZStack para que el hueco exista aunque el contenido sea un `if` falso.
+        ZStack { content }
+            .frame(width: RowColumns.action)
+    }
+}
+
 private struct SizeText: View {
     let bytes: UInt64
 
@@ -335,6 +397,6 @@ private struct SizeText: View {
         Text(Int64(bytes), format: .byteCount(style: .file))
             .monospacedDigit()
             .foregroundStyle(.secondary)
-            .frame(minWidth: 70, alignment: .trailing)
+            .frame(width: RowColumns.size, alignment: .trailing)
     }
 }

@@ -21,3 +21,8 @@ Config/Secrets.xcconfig
 *.p12
 *.mobileprovision
 *.provisionprofile
+# Icono propio de carpeta de Finder (el nombre termina en \r)
+Icon
+
+# Scripts locales
+scripts/

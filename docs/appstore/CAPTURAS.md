@@ -22,30 +22,41 @@
    - Fondo de escritorio neutro y Dock oculto.
    - Barra de menús sin extras de terceros.
    - No molestar activado, para que no salgan notificaciones.
-3. **Pantalla:** en Retina, elige en Ajustes del Sistema › Pantallas la resolución «parece 1440×900». Las capturas a pantalla completa salen entonces a 2880×1800.
-4. **Ventana:** tamaño de unos 1280×800 puntos, centrada. Con el panel Actividad abierto donde se indica.
+3. **Pantalla:** el método de pantalla completa solo sirve en pantallas 16:10 con la resolución «parece 1440×900». En una pantalla 16:9 (como la 5K de Studio Display) se captura solo la ventana: ver el punto 4.
+4. **Ventana:** exactamente 1440×900 puntos, que en Retina dan 2880×1800 px. Con el panel Actividad abierto donde se indica. Para fijar el tamaño (requiere permiso de Accesibilidad para Terminal):
+
+   ```bash
+   osascript -e 'tell application "System Events" to tell process "SystemBack"
+   set position of window 1 to {200, 100}
+   set size of window 1 to {1440, 900}
+   end tell'
+   ```
 5. **Idioma:** Ajustes de la app › Idioma. Haz el juego es-ES en español y el juego en en inglés, reiniciando la app entre los dos.
 
 ## Cómo capturar
 
-- **Pantalla completa** (recomendado): ⇧⌘3. Sale a 2880×1800 directamente con la resolución del punto 3.
-- **Solo la ventana**: ⇧⌘4 y luego Espacio, con ⌥ pulsado para quitar la sombra. Después hay que colocarla sobre un lienzo de 2880×1800, porque Apple exige el tamaño exacto.
+- **Solo la ventana** (recomendado): ⇧⌘4, luego Espacio, y clic en la ventana con ⌥ pulsado para quitar la sombra. Con la ventana a 1440×900 pt sale a 2880×1800 directamente.
+- **Pantalla completa**: ⇧⌘3, solo en pantallas 16:10 con la resolución del punto 3.
+- Los diálogos y hojas salen dentro de la ventana: captura la ventana, no el diálogo suelto.
 - Comprueba el tamaño con `sips -g pixelWidth -g pixelHeight captura.png`.
 
 ## Capturas propuestas (en este orden)
 
-| # | Pantalla | Qué tiene que verse | Texto superpuesto opcional (es / en) |
-| --- | --- | --- | --- |
-| 1 | Ventana principal, trabajo «Proyecto Web» seleccionado | Barra lateral con los dos trabajos, las tres tarjetas de acción y la lista de backups con etiquetas Completo, Cambios, Local y Drive | «Tus carpetas, a salvo en .tar.gz» / «Your folders, safe in .tar.gz» |
-| 2 | Backup en curso con el panel Actividad abierto | Barra de progreso con la ruta del archivo actual y el registro con líneas en verde | «Progreso y registro de cada operación» / «Progress and a log of every step» |
-| 3 | Diálogo «¿Restaurar en la carpeta original?» | El texto que explica que lo sustituido va a la Papelera | «Restaura en su sitio. Lo sustituido va a la Papelera» / «Restore in place. Anything replaced goes to the Trash» |
-| 4 | Lista con un backup «solo en Drive» y el puntero sobre «Descargar a este Mac» | Etiqueta Drive sin Local y la ayuda emergente visible | «Copia opcional en tu Google Drive» / «Optional copy in your Google Drive» |
-| 5 | Ajustes | Idioma, la sección Google Drive conectada (con una cuenta de demostración, no la personal) y «Abrir al iniciar sesión» | «Sin cuentas propias ni seguimiento» / «No accounts, no tracking» |
-| 6 | Hoja «Nuevo trabajo de backup» | Origen y destino elegidos en `~/Demo` | «Elige qué copiar y dónde» / «Choose what to back up, and where» |
+Archivos finales en `capturas/es/` y `capturas/en/`, con el mismo número en los dos idiomas.
+
+| # | Archivo (es / en) | Pantalla | Qué tiene que verse | Texto superpuesto opcional (es / en) |
+| --- | --- | --- | --- | --- |
+| 1 | `appstore-01-principal` / `appstore-01-main` | Ventana principal, «Proyecto Web» seleccionado | Barra lateral con los dos trabajos, las tres tarjetas de acción y la lista de backups con etiquetas Completo, Cambios y Local | «Tus carpetas, a salvo en .tar.gz» / «Your folders, safe in .tar.gz» |
+| 2 | `appstore-02-backup-en-curso` / `appstore-02-backup-in-progress` | Backup en curso con el panel Actividad abierto | Barra de progreso con la ruta del archivo actual | «Progreso y registro de cada operación» / «Progress and a log of every step» |
+| 3 | `appstore-03-google-drive` | Subida a Google Drive en curso | Barra «Subiendo … a Google Drive» y botón Subir en las filas | «Copia opcional en tu Google Drive» / «Optional copy in your Google Drive» |
+| 4 | `appstore-04-restaurar-en-origen` / `appstore-04-restore-in-place` | Diálogo «¿Restaurar en la carpeta original?» | El texto que explica que lo sustituido va a la Papelera | «Restaura en su sitio. Lo sustituido va a la Papelera» / «Restore in place. Anything replaced goes to the Trash» |
+| 5 | `appstore-05-nuevo-trabajo` / `appstore-05-new-job` | Hoja «Nuevo trabajo de backup» | Origen y destino elegidos en `~/Demo` | «Elige qué copiar y dónde» / «Choose what to back up, and where» |
+| 6 | `appstore-06-ajustes` / `appstore-06-settings` | Ajustes | Idioma, Aspecto, Google Drive (desconectado: no se ve ningún correo) y «Abrir al iniciar sesión» | «Sin cuentas propias ni seguimiento» / «No accounts, no tracking» |
 
 Notas:
 
-- **Captura 5:** el correo de Google se ve en pantalla. Usa una cuenta de demostración o tapa el correo con un rectángulo del color del fondo; no lo difumines.
+- **Captura 6:** si Drive está conectado se ve el correo de Google. Captúrala desconectada, con una cuenta de demostración o con el correo tapado por un rectángulo del color del fondo; no lo difumines.
+- **Antes de capturar:** oculta la Terminal y Finder (⌥⌘H desde SystemBack) y deja SystemBack en primer plano. Si no, salen el usuario y los discos, y los botones por defecto pierden el azul.
 - **Texto superpuesto:** si se añade, va en una franja encima de la captura y en el idioma de la ficha. La parte de la app tiene que seguir viéndose entera y legible.
 - **Vídeo de vista previa:** opcional y fuera de la v1.0.
 

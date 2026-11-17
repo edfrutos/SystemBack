@@ -115,7 +115,7 @@ Leyenda de estado: `[ ]` pendiente · `[~]` en curso · `[x]` hecho · `[!]` blo
 ### F6 — App Store Connect y envío
 - [ ] Nombre, subtítulo, descripción, palabras clave
 - [ ] URL de soporte + URL de la política de privacidad
-- [ ] Capturas 16:10 (1280×800 / 1440×900 / 2560×1600 / 2880×1800)
+- [x] Capturas 16:10: 6 por idioma (es, en) a 2880×1800 en `docs/appstore/capturas/` (2026-11-17)
 - [ ] Etiquetas App Privacy
 - [ ] Clasificación por edades
 - [ ] Cumplimiento de exportación
@@ -269,3 +269,12 @@ Leyenda de estado: `[ ]` pendiente · `[~]` en curso · `[x]` hecho · `[!]` blo
 - Permiso único `drive.file` (no sensible): no hace falta revisión de seguridad.
 - Comprobar en Público que el estado de publicación es «En producción». En «En prueba» solo entran los usuarios de prueba y el token de renovación caduca a los 7 días.
 - Tras pasar a producción: desconectar y volver a conectar Drive en la app para obtener un token de producción.
+
+### 2026-11-16/17 (capturas y ajustes de la app)
+
+- **Rutas con `~/`:** la app abrevia la carpeta de inicio real (`getpwuid`, no el contenedor del sandbox) en la interfaz, los diálogos y el registro. `PathDisplay` en SystemBackCore, con tests (`/Users/anabel` no se abrevia si el inicio es `/Users/ana`).
+- **«Último backup hace…»:** la barra lateral y la cabecera comparten un reloj por minutos (`TimelineView(.everyMinute)`) y ya no se contradicen. Nuevo texto «Último backup hace un momento».
+- **Aspecto en Ajustes** (Automático, Claro, Oscuro), a petición del usuario. Se aparta de las HIG (`dark-mode.md`); justificado en `REVISION_DISENO.md`.
+- **Columnas de la lista de backups alineadas:** etiquetas Local y Drive, tamaño y botones en huecos de ancho fijo. Un `Group` o un `if` vacío no ocupa sitio; se usa `ZStack` con `frame`.
+- **Capturas:** 6 en es y 6 en en, 2880×1800, RGB, sin transparencia, con datos de `~/Demo`. Revisadas: sin usuario, discos, correo ni Terminal. Pasos y orden en `CAPTURAS.md`.
+- `.gitignore`: `Icon\r` (icono de carpeta de Finder) y `scripts/` locales.

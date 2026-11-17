@@ -138,7 +138,7 @@ final class AppModel {
             do {
                 let location = try await BackgroundWork.moveToTrash(archive, of: job)
                 append(.info, String(localized: "\(archive.name) moved to the Trash."))
-                if let location { append(.info, String(localized: "Location: \(location.path)")) }
+                if let location { append(.info, String(localized: "Location: \(PathDisplay.abbreviatingHome(location.path))")) }
             } catch {
                 append(.error, Self.describe(error))
                 notice = Notice(title: String(localized: "Couldn’t Move to Trash"), message: Self.describe(error))
@@ -237,7 +237,7 @@ final class AppModel {
             if let replaced = output.replaced {
                 append(.info, String(localized: "Previous backup \(replaced.name) moved to the Trash."))
                 if let location = output.replacedTrashLocation {
-                    append(.info, String(localized: "Location: \(location.path)"))
+                    append(.info, String(localized: "Location: \(PathDisplay.abbreviatingHome(location.path))"))
                 }
             } else if mode == .replaceLatest, output.replaceFailure == nil {
                 append(.warning, String(localized: "There was no previous backup to replace."))
@@ -326,7 +326,7 @@ final class AppModel {
             do {
                 let summary = try await work(continuation)
                 append(.success, summary.message)
-                append(.info, String(localized: "Location: \(summary.location.path)"))
+                append(.info, String(localized: "Location: \(PathDisplay.abbreviatingHome(summary.location.path))"))
                 notice = Notice(title: String(localized: "Restore Complete"), message: summary.message,
                                 revealURL: summary.location, revealScope: summary.scope)
             } catch is CancellationError {

@@ -3,6 +3,7 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(AppModel.self) private var model
     @State private var language = AppLanguage.selected
+    @State private var appearance = AppAppearance.selected
     @State private var opensAtLogin = LoginItem.isEnabled
     @State private var needsApproval = LoginItem.requiresApproval
     @State private var errorMessage: String?
@@ -26,6 +27,13 @@ struct SettingsView: View {
                         Button("Restart Now") { AppLanguage.relaunch() }
                     }
                 }
+
+                Picker("Appearance", selection: $appearance) {
+                    ForEach(AppAppearance.allCases) { option in
+                        Text(option.title).tag(option)
+                    }
+                }
+                .onChange(of: appearance) { _, newValue in AppAppearance.select(newValue) }
             }
 
             Section {
