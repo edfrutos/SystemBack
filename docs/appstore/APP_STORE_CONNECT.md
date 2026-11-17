@@ -1,9 +1,8 @@
 # App Store Connect: respuestas para SystemBack
 
-Borrador para rellenar App Store Connect. Supuestos de partida:
+Textos y respuestas para App Store Connect, en español (idioma principal) y en inglés. La v1.0 incluye la copia opcional en Google Drive (scope `drive.file`, marca verificada por Google el 2026-11-16).
 
-- La v1.0 incluye la copia en Google Drive (scope `drive.file`).
-- Si Drive se queda fuera de la v1.0, se aplican igual estas respuestas y se borra lo marcado *(Drive)*.
+Límites de App Store Connect: nombre y subtítulo ≤30 caracteres, texto promocional ≤170, descripción ≤4000, palabras clave ≤100 (separadas por comas, sin espacios).
 
 Revisar antes de enviar: quien responde ante Apple es el titular de la cuenta.
 
@@ -56,7 +55,7 @@ Justificación según la definición de Apple: «recopilar» es transmitir datos
 
 - SystemBack no tiene servidor, ni analítica, ni SDK de terceros, ni publicidad.
 - Los backups se escriben en carpetas que elige el usuario.
-- *(Drive)* La copia en Google Drive la ordena el usuario y va directamente de su Mac a **su propia** cuenta de Drive. El desarrollador no recibe ni puede ver nada.
+- La copia en Google Drive la ordena el usuario y va directamente de su Mac a **su propia** cuenta de Drive. El desarrollador no recibe ni puede ver nada.
 - El token de Google se guarda en el Llavero del Mac.
 
 Es la misma respuesta que corresponde a Gestor de Correos Gmail (mismo patrón OAuth y procesamiento local). Si allí se declaró otra cosa, conviene que las dos apps coincidan.
@@ -92,7 +91,7 @@ Resultado esperado: **4+**.
 
 ## 8. Información para la revisión (App Review)
 
-- **Inicio de sesión necesario:** No. *(Drive)* Google es opcional y solo conecta el servicio de almacenamiento.
+- **Inicio de sesión necesario:** No. Google es opcional y solo conecta el servicio de almacenamiento.
 - **Contacto:** nombre, teléfono y correo del titular, que se rellenan a mano.
 - **Notas para el revisor** (en inglés, que es lo que lee el revisor):
 
@@ -110,7 +109,7 @@ The app is sandboxed and only accesses folders chosen through the Open panel (se
 bookmarks). It has no account, no server, no analytics and no ads.
 "Open at Login" is off by default and only enabled by the user in Settings (SMAppService).
 
-(Drive) Google Drive upload is optional. Google sign-in is used only to connect the user's own
+Google Drive upload is optional (Settings > Google Drive, or the toggle in each job). Google sign-in is used only to connect the user's own
 Drive storage (scope drive.file: the app can only see files it created). It is not an app account,
 so Sign in with Apple (guideline 4.8) does not apply. You can test it with any Google account.
 ```
@@ -119,8 +118,8 @@ so Sign in with Apple (guideline 4.8) does not apply. You can test it with any G
 
 ### Texto promocional (≤170, editable sin revisión)
 
-- es: `Copia tus carpetas en archivos .tar.gz estándar y restáuralas cuando quieras: en una carpeta nueva o en su sitio original. Sin cuentas, sin seguimiento.`
-- en: `Back up your folders into standard .tar.gz archives and restore them whenever you need: into a new folder or right where they were. No accounts, no tracking.`
+- es (144): `Copia tus carpetas en archivos .tar.gz estándar, con copia opcional en tu Google Drive, y restáuralas donde quieras. Sin cuentas ni seguimiento.`
+- en (149): `Back up your folders into standard .tar.gz archives, with an optional copy in your Google Drive, and restore them anywhere. No accounts, no tracking.`
 
 ### Descripción (es)
 
@@ -136,11 +135,14 @@ QUÉ PUEDES HACER
 • Restaurar en la carpeta original: recupera lo borrado o modificado; lo que se sustituye va
   primero a la Papelera, así que siempre puedes deshacer.
 • Ver tus backups, su tipo, fecha y tamaño, y abrirlos en el Finder.
+• Guardar una copia en tu Google Drive (opcional), descargarla y restaurar desde ella.
 • Panel de actividad con el progreso y el registro de cada operación.
+• Menús y atajos de teclado para todo, en español e inglés, con aspecto claro u oscuro.
 
 PRIVACIDAD
-Todo ocurre en tu Mac. Sin cuentas, sin servidores, sin publicidad y sin analítica. La app solo
-accede a las carpetas que tú eliges.
+Todo ocurre en tu Mac. Sin cuentas propias, sin servidores, sin publicidad y sin analítica. La
+app solo accede a las carpetas que tú eliges. La copia en Google Drive va directamente de tu Mac
+a tu cuenta, y SystemBack solo puede ver los archivos que crea en ella.
 
 FORMATO ABIERTO
 Tus backups no dependen de SystemBack: son archivos .tar.gz normales.
@@ -160,34 +162,35 @@ WHAT YOU CAN DO
 • Restore into the original folder: bring back deleted or changed files; anything replaced goes
   to the Trash first, so you can always undo.
 • See your backups with type, date and size, and show them in Finder.
+• Keep a copy in your Google Drive (optional), download it and restore from it.
 • Activity panel with progress and a log of every operation.
+• Menus and keyboard shortcuts for everything, in English and Spanish, in light or dark mode.
 
 PRIVACY
-Everything happens on your Mac. No accounts, no servers, no ads, no analytics. The app only
-accesses the folders you choose.
+Everything happens on your Mac. No app accounts, no servers, no ads, no analytics. The app only
+accesses the folders you choose. The Google Drive copy goes straight from your Mac to your
+account, and SystemBack can only see the files it creates there.
 
 OPEN FORMAT
 Your backups don't depend on SystemBack: they're plain .tar.gz files.
 ```
 
-*(Drive)* Cuando exista, añadir a «Qué puedes hacer»: `• Guardar una copia en tu Google Drive (opcional).` y a privacidad `La copia en Google Drive va directamente de tu Mac a tu cuenta.`
-
 ### Palabras clave (≤100, sin marcas de terceros: guía 2.3.7)
 
 - es (96): `backup,copia de seguridad,respaldo,restaurar,tar.gz,incremental,carpetas,archivos,disco,papelera`
-- en (≤100): `backup,restore,archive,tar.gz,incremental,folder,files,copy,safe,versions,disk,recovery`
+- en (96): `backup,restore,archive,tar.gz,incremental,folder,files,copy,safe,versions,disk,recovery,snapshot`
 
 ### URLs
 
 | Campo | URL |
 | --- | --- |
-| Soporte | `https://efjdev.com/soporte/` |
+| Soporte | `https://efjdev.com/systemback/` (comprobar que la página tiene un contacto; si existe `efjdev.com/soporte/`, usar esa) |
 | Marketing | `https://efjdev.com/systemback/` |
 | Copyright | `2026 Eugenio de Frutos Sánchez` |
 
 ### Capturas (Mac)
 
-Lista, preparación y requisitos en [`CAPTURAS.md`](CAPTURAS.md): seis capturas a 2880×1800, con datos de demostración.
+Seis por idioma a 2880×1800 en `capturas/es/` y `capturas/en/`, en el orden de [`CAPTURAS.md`](CAPTURAS.md). Se suben en la localización correspondiente (es-ES y en).
 
 ## 10. Comprobación de guías antes de enviar
 

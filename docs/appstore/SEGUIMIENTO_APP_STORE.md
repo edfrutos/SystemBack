@@ -278,3 +278,9 @@ Leyenda de estado: `[ ]` pendiente · `[~]` en curso · `[x]` hecho · `[!]` blo
 - **Columnas de la lista de backups alineadas:** etiquetas Local y Drive, tamaño y botones en huecos de ancho fijo. Un `Group` o un `if` vacío no ocupa sitio; se usa `ZStack` con `frame`.
 - **Capturas:** 6 en es y 6 en en, 2880×1800, RGB, sin transparencia, con datos de `~/Demo`. Revisadas: sin usuario, discos, correo ni Terminal. Pasos y orden en `CAPTURAS.md`.
 - `.gitignore`: `Icon\r` (icono de carpeta de Finder) y `scripts/` locales.
+
+### 2026-11-17 (App Store Connect y TestFlight)
+
+- App dada de alta en App Store Connect (`com.edefrutos.systemback`, equipo `V29BTBRY6G`). Perfil de distribución «SystemBack» (Apple Distribution, válido hasta 2027-09-12); firma automática en el proyecto.
+- Build 1.0 (1) archivado y subido desde Xcode. Procesado y disponible en TestFlight.
+- El próximo build tiene que llevar `CURRENT_PROJECT_VERSION = 2`.
